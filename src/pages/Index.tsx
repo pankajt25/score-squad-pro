@@ -1,14 +1,48 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import MatchSetup from "@/components/cricket/MatchSetup";
+import PlayerEntry from "@/components/cricket/PlayerEntry";
+import Toss from "@/components/cricket/Toss";
+import LiveScorecard from "@/components/cricket/LiveScorecard";
+import { useCricketMatch } from "@/hooks/useCricketMatch";
 
 const Index = () => {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
-  );
+  const {
+    match, currentInnings, lastEvent, animationType,
+    createMatch, setPlayers, setToss, recordBall,
+    startSecondInnings, selectBowler, resetMatch,
+  } = useCricketMatch();
+
+  // No match yet
+  if (!match || match.matchStatus === "setup") {
+    return <MatchSetup onSubmit={createMatch} />;
+  }
+
+  // Player entry
+  if (match.matchStatus === "players") {
+    return <PlayerEntry teamA={match.teamA} teamB={match.teamB} onSubmit={setPlayers} />;
+  }
+
+  // Toss
+  if (match.matchStatus === "toss") {
+    return <Toss teamA={match.teamA} teamB={match.teamB} onSubmit={setToss} />;
+  }
+
+  // Live / innings break / completed
+  if (currentInnings) {
+    return (
+      <LiveScorecard
+        match={match}
+        innings={currentInnings}
+        onRecordBall={recordBall}
+        onSelectBowler={selectBowler}
+        onStartSecondInnings={startSecondInnings}
+        onResetMatch={resetMatch}
+        lastEvent={lastEvent}
+        animationType={animationType}
+      />
+    );
+  }
+
+  return <MatchSetup onSubmit={createMatch} />;
 };
 
 export default Index;
