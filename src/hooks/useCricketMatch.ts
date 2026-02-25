@@ -281,6 +281,50 @@ export function useCricketMatch() {
     });
   }, []);
 
+  const swapStrike = useCallback(() => {
+    setMatch(prev => {
+      if (!prev || prev.matchStatus !== "live") return prev;
+      const inningsIdx = prev.currentInnings;
+      const innings = prev.innings[inningsIdx];
+      if (!innings) return prev;
+      const newInnings: InningsData = JSON.parse(JSON.stringify(innings));
+      const temp = newInnings.currentBatsmanIndex;
+      newInnings.currentBatsmanIndex = newInnings.nonStrikerIndex;
+      newInnings.nonStrikerIndex = temp;
+      newInnings.batsmen.forEach((b, i) => {
+        b.isOnStrike = i === newInnings.currentBatsmanIndex;
+      });
+      const newInningsArr: [InningsData | null, InningsData | null] = [...prev.innings];
+      newInningsArr[inningsIdx] = newInnings;
+      return { ...prev, innings: newInningsArr };
+    });
+  }, []);
+
+  const changeBatsman = useCallback((position: "striker" | "nonStriker", newBatsmanIndex: number) => {
+    setMatch(prev => {
+      if (!prev || prev.matchStatus !== "live") return prev;
+      const inningsIdx = prev.currentInnings;
+      const innings = prev.innings[inningsIdx];
+      if (!innings) return prev;
+      const newInnings: InningsData = JSON.parse(JSON.stringify(innings));
+      const oldIdx = position === "striker" ? newInnings.currentBatsmanIndex : newInnings.nonStrikerIndex;
+      // Remove old batsman from crease (but don't mark as out)
+      newInnings.batsmen[oldIdx].isAtCrease = false;
+      newInnings.batsmen[oldIdx].isOnStrike = false;
+      // Bring new batsman to crease
+      newInnings.batsmen[newBatsmanIndex].isAtCrease = true;
+      newInnings.batsmen[newBatsmanIndex].isOnStrike = position === "striker";
+      if (position === "striker") {
+        newInnings.currentBatsmanIndex = newBatsmanIndex;
+      } else {
+        newInnings.nonStrikerIndex = newBatsmanIndex;
+      }
+      const newInningsArr: [InningsData | null, InningsData | null] = [...prev.innings];
+      newInningsArr[inningsIdx] = newInnings;
+      return { ...prev, innings: newInningsArr };
+    });
+  }, []);
+
   const resetMatch = useCallback(() => {
     localStorage.removeItem(STORAGE_KEY);
     setMatch(null);
@@ -300,6 +344,8 @@ export function useCricketMatch() {
     recordBall,
     startSecondInnings,
     selectBowler,
+    swapStrike,
+    changeBatsman,
     resetMatch,
   };
 }

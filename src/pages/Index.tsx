@@ -14,7 +14,7 @@ const Index = () => {
   const {
     match, currentInnings, lastEvent, animationType,
     createMatch, setPlayers, setToss, recordBall,
-    startSecondInnings, selectBowler, resetMatch,
+    startSecondInnings, selectBowler, swapStrike, changeBatsman, resetMatch,
   } = useCricketMatch();
 
   const [showHistory, setShowHistory] = useState(false);
@@ -92,6 +92,8 @@ const Index = () => {
           innings={currentInnings}
           onRecordBall={recordBall}
           onSelectBowler={selectBowler}
+          onSwapStrike={swapStrike}
+          onChangeBatsman={changeBatsman}
           onStartSecondInnings={startSecondInnings}
           onResetMatch={resetMatch}
           lastEvent={lastEvent}
