@@ -7,6 +7,8 @@ interface LiveScorecardProps {
   innings: InningsData;
   onRecordBall: (input: ScoreInput) => void;
   onSelectBowler: (index: number) => void;
+  onSwapStrike: () => void;
+  onChangeBatsman: (position: "striker" | "nonStriker", newBatsmanIndex: number) => void;
   onStartSecondInnings?: () => void;
   onResetMatch: () => void;
   lastEvent: string;
@@ -14,9 +16,10 @@ interface LiveScorecardProps {
 }
 
 export default function LiveScorecard({
-  match, innings, onRecordBall, onSelectBowler, onStartSecondInnings, onResetMatch, lastEvent, animationType,
+  match, innings, onRecordBall, onSelectBowler, onSwapStrike, onChangeBatsman, onStartSecondInnings, onResetMatch, lastEvent, animationType,
 }: LiveScorecardProps) {
   const [showBowlerSelect, setShowBowlerSelect] = useState(false);
+  const [showBatsmanSelect, setShowBatsmanSelect] = useState<"striker" | "nonStriker" | null>(null);
   const [ballAnimKey, setBallAnimKey] = useState(0);
   const [lastBallType, setLastBallType] = useState<string>("");
 
@@ -105,11 +108,35 @@ export default function LiveScorecard({
         )}
       </div>
 
-      {/* Batsmen */}
       <div className="bg-card rounded-lg border border-border overflow-hidden">
-        <div className="px-4 py-2 border-b border-border bg-muted/50">
+        <div className="px-4 py-2 border-b border-border bg-muted/50 flex items-center justify-between">
           <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Batting</span>
+          {!isInningsBreak && !isCompleted && (
+            <div className="flex gap-2">
+              <button onClick={onSwapStrike} className="text-xs text-primary hover:underline">Swap Strike</button>
+              <button onClick={() => setShowBatsmanSelect(showBatsmanSelect ? null : "striker")} className="text-xs text-primary hover:underline">Change</button>
+            </div>
+          )}
         </div>
+        {showBatsmanSelect && (
+          <div className="p-3 border-b border-border bg-muted/30 space-y-2">
+            <div className="flex gap-2 mb-1">
+              <Button size="sm" variant={showBatsmanSelect === "striker" ? "default" : "outline"} onClick={() => setShowBatsmanSelect("striker")} className="text-xs">Striker</Button>
+              <Button size="sm" variant={showBatsmanSelect === "nonStriker" ? "default" : "outline"} onClick={() => setShowBatsmanSelect("nonStriker")} className="text-xs">Non-Striker</Button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {innings.batsmen.map((b, i) => {
+                const isCurrent = i === innings.currentBatsmanIndex || i === innings.nonStrikerIndex;
+                if (b.isOut || isCurrent) return null;
+                return (
+                  <Button key={i} size="sm" variant="outline" onClick={() => { onChangeBatsman(showBatsmanSelect, i); setShowBatsmanSelect(null); }} className="text-xs">
+                    {b.name}
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
+        )}
         <table className="w-full text-sm">
           <thead>
             <tr className="text-xs text-muted-foreground border-b border-border">
