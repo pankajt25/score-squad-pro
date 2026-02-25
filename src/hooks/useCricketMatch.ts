@@ -234,8 +234,9 @@ export function useCricketMatch() {
             winner = first.battingTeam;
             winMargin = `${first.totalRuns - second.totalRuns} runs`;
           } else {
-            winner = "Tie";
-            winMargin = "";
+            winner = null;
+            winMargin = null;
+            status = "super_over_break" as const;
           }
         }
       }
@@ -325,13 +326,226 @@ export function useCricketMatch() {
     });
   }, []);
 
+  const startSuperOver = useCallback(() => {
+    setMatch(prev => {
+      if (!prev || prev.matchStatus !== "super_over_break") return prev;
+      // Team that batted second in main innings bats first in super over
+      const secondInnings = prev.innings[1]!;
+      const battingFirst = secondInnings.battingTeam;
+      const bowlingFirst = secondInnings.bowlingTeam;
+      const battingPlayers = battingFirst === prev.teamA ? prev.teamAPlayers : prev.teamBPlayers;
+      const bowlingPlayers = bowlingFirst === prev.teamA ? prev.teamAPlayers : prev.teamBPlayers;
+      const soInnings = createEmptyInnings(battingFirst, bowlingFirst, battingPlayers, bowlingPlayers);
+      return {
+        ...prev,
+        matchStatus: "super_over",
+        oversLimit: 1,
+        superOver: {
+          innings: [soInnings, null],
+          currentInnings: 0,
+        },
+      };
+    });
+  }, []);
+
+  const startSuperOverSecondInnings = useCallback(() => {
+    setMatch(prev => {
+      if (!prev || !prev.superOver || !prev.superOver.innings[0]) return prev;
+      const first = prev.superOver.innings[0];
+      const battingPlayers = first.bowlingTeam === prev.teamA ? prev.teamAPlayers : prev.teamBPlayers;
+      const bowlingPlayers = first.battingTeam === prev.teamA ? prev.teamAPlayers : prev.teamBPlayers;
+      const secondInnings = createEmptyInnings(first.bowlingTeam, first.battingTeam, battingPlayers, bowlingPlayers);
+      return {
+        ...prev,
+        matchStatus: "super_over",
+        superOver: {
+          ...prev.superOver,
+          innings: [prev.superOver.innings[0], secondInnings],
+          currentInnings: 1,
+        },
+      };
+    });
+  }, []);
+
+  const recordSuperOverBall = useCallback((input: ScoreInput) => {
+    setMatch(prev => {
+      if (!prev || prev.matchStatus !== "super_over" || !prev.superOver) return prev;
+      const soInningsIdx = prev.superOver.currentInnings;
+      const innings = prev.superOver.innings[soInningsIdx];
+      if (!innings || innings.isCompleted) return prev;
+
+      // Reuse same ball logic
+      const newInnings: InningsData = JSON.parse(JSON.stringify(innings));
+      const striker = newInnings.batsmen[newInnings.currentBatsmanIndex];
+      const bowler = newInnings.bowlers[newInnings.currentBowlerIndex];
+      const runs = input.runs ?? 0;
+      let isLegalBall = true;
+      let desc = "";
+
+      if (input.type === "wide") {
+        isLegalBall = false;
+        newInnings.totalRuns += 1 + runs;
+        newInnings.extras.wides += 1 + runs;
+        newInnings.extras.total += 1 + runs;
+        bowler.runsConceded += 1 + runs;
+        bowler.wides += 1;
+        desc = runs > 0 ? `Wide + ${runs}` : "Wide";
+      } else if (input.type === "noBall") {
+        isLegalBall = false;
+        newInnings.totalRuns += 1 + runs;
+        newInnings.extras.noBalls += 1;
+        newInnings.extras.total += 1;
+        bowler.runsConceded += 1 + runs;
+        bowler.noBalls += 1;
+        if (runs > 0) {
+          striker.runs += runs;
+          striker.balls += 1;
+          if (runs === 4) striker.fours += 1;
+          if (runs === 6) striker.sixes += 1;
+        }
+        desc = `No Ball${runs > 0 ? ` + ${runs}` : ""}`;
+      } else if (input.type === "wicket") {
+        isLegalBall = true;
+        striker.isOut = true;
+        striker.dismissal = input.wicketType || "out";
+        striker.balls += 1;
+        striker.isAtCrease = false;
+        striker.isOnStrike = false;
+        newInnings.totalWickets += 1;
+        bowler.wickets += 1;
+        newInnings.fallOfWickets.push({
+          wicketNumber: newInnings.totalWickets,
+          score: newInnings.totalRuns,
+          overs: getOversString(newInnings.totalOvers, newInnings.ballsInCurrentOver + 1),
+          batsmanName: striker.name,
+        });
+        const nextIdx = newInnings.batsmen.findIndex(b => !b.isOut && !b.isAtCrease);
+        if (nextIdx !== -1) {
+          newInnings.batsmen[nextIdx].isAtCrease = true;
+          newInnings.batsmen[nextIdx].isOnStrike = true;
+          newInnings.currentBatsmanIndex = nextIdx;
+        }
+        desc = `WICKET! ${striker.name} ${input.wicketType || "out"}`;
+        setAnimationType("wicket");
+        setTimeout(() => setAnimationType(null), 700);
+      } else {
+        isLegalBall = true;
+        newInnings.totalRuns += runs;
+        striker.runs += runs;
+        striker.balls += 1;
+        bowler.runsConceded += runs;
+        if (runs === 4) striker.fours += 1;
+        if (runs === 6) striker.sixes += 1;
+        desc = runs === 0 ? "Dot ball" : `${runs} run${runs > 1 ? "s" : ""}`;
+        if (runs > 0) {
+          setAnimationType("score");
+          setTimeout(() => setAnimationType(null), 600);
+        }
+      }
+
+      if (isLegalBall && runs % 2 === 1) {
+        const temp = newInnings.currentBatsmanIndex;
+        newInnings.currentBatsmanIndex = newInnings.nonStrikerIndex;
+        newInnings.nonStrikerIndex = temp;
+        newInnings.batsmen.forEach((b, i) => { b.isOnStrike = i === newInnings.currentBatsmanIndex; });
+      }
+
+      if (isLegalBall) {
+        newInnings.ballsInCurrentOver += 1;
+        bowler.ballsInCurrentOver += 1;
+        if (newInnings.ballsInCurrentOver === 6) {
+          newInnings.totalOvers += 1;
+          newInnings.ballsInCurrentOver = 0;
+          bowler.overs += 1;
+          bowler.ballsInCurrentOver = 0;
+          const temp = newInnings.currentBatsmanIndex;
+          newInnings.currentBatsmanIndex = newInnings.nonStrikerIndex;
+          newInnings.nonStrikerIndex = temp;
+          newInnings.batsmen.forEach((b, i) => { b.isOnStrike = i === newInnings.currentBatsmanIndex; });
+        }
+      }
+
+      const event: BallEvent = {
+        over: newInnings.totalOvers,
+        ball: newInnings.ballsInCurrentOver,
+        runs,
+        isWide: input.type === "wide",
+        isNoBall: input.type === "noBall",
+        isWicket: input.type === "wicket",
+        batsmanName: striker.name,
+        bowlerName: bowler.name,
+        description: desc,
+      };
+      newInnings.ballLog.push(event);
+      setLastEvent(desc);
+
+      // Super over: all out ends innings (only 2 batsmen typically but we use full roster)
+      if (newInnings.totalWickets >= newInnings.batsmen.length - 1) {
+        newInnings.isCompleted = true;
+      }
+      // 1 over limit
+      if (newInnings.totalOvers >= 1 && newInnings.ballsInCurrentOver === 0) {
+        newInnings.isCompleted = true;
+      }
+      // 2nd SO innings chase
+      if (soInningsIdx === 1 && prev.superOver.innings[0]) {
+        const target = prev.superOver.innings[0].totalRuns + 1;
+        if (newInnings.totalRuns >= target) {
+          newInnings.isCompleted = true;
+        }
+      }
+
+      const newSOInnings: [InningsData | null, InningsData | null] = [...prev.superOver.innings];
+      newSOInnings[soInningsIdx] = newInnings;
+
+      let status: MatchData["matchStatus"] = prev.matchStatus;
+      let winner = prev.winner;
+      let winMargin = prev.winMargin;
+
+      if (newInnings.isCompleted) {
+        if (soInningsIdx === 0) {
+          status = "innings_break" as const;
+          // We'll use a special flag to know it's SO innings break
+        } else {
+          status = "completed" as const;
+          const first = newSOInnings[0]!;
+          const second = newInnings;
+          if (second.totalRuns > first.totalRuns) {
+            winner = second.battingTeam;
+            winMargin = `Super Over`;
+          } else if (first.totalRuns > second.totalRuns) {
+            winner = first.battingTeam;
+            winMargin = `Super Over`;
+          } else {
+            winner = "Tie";
+            winMargin = "Super Over tied too!";
+          }
+        }
+      }
+
+      return {
+        ...prev,
+        matchStatus: status,
+        winner,
+        winMargin,
+        superOver: {
+          ...prev.superOver,
+          innings: newSOInnings,
+          currentInnings: prev.superOver.currentInnings,
+        },
+      };
+    });
+  }, []);
+
   const resetMatch = useCallback(() => {
     localStorage.removeItem(STORAGE_KEY);
     setMatch(null);
     setLastEvent("");
   }, []);
 
-  const currentInnings = match?.innings[match.currentInnings] ?? null;
+  const currentInnings = match?.superOver
+    ? match.superOver.innings[match.superOver.currentInnings] ?? null
+    : match?.innings[match.currentInnings] ?? null;
 
   return {
     match,
@@ -347,5 +561,8 @@ export function useCricketMatch() {
     swapStrike,
     changeBatsman,
     resetMatch,
+    startSuperOver,
+    startSuperOverSecondInnings,
+    recordSuperOverBall,
   };
 }

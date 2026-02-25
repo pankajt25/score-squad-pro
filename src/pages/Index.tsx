@@ -15,6 +15,7 @@ const Index = () => {
     match, currentInnings, lastEvent, animationType,
     createMatch, setPlayers, setToss, recordBall,
     startSecondInnings, selectBowler, swapStrike, changeBatsman, resetMatch,
+    startSuperOver, startSuperOverSecondInnings, recordSuperOverBall,
   } = useCricketMatch();
 
   const [showHistory, setShowHistory] = useState(false);
@@ -44,7 +45,7 @@ const Index = () => {
 
   // Dark mode is handled by the TopBar's useDarkMode hook — 
   // we still need to init it, so TopBar is always rendered
-  const showExport = !!(match && (match.matchStatus === "live" || match.matchStatus === "innings_break" || match.matchStatus === "completed"));
+  const showExport = !!(match && (match.matchStatus === "live" || match.matchStatus === "innings_break" || match.matchStatus === "completed" || match.matchStatus === "super_over_break" || match.matchStatus === "super_over"));
 
   if (showHistory) {
     return (
@@ -96,6 +97,9 @@ const Index = () => {
           onChangeBatsman={changeBatsman}
           onStartSecondInnings={startSecondInnings}
           onResetMatch={resetMatch}
+          onStartSuperOver={startSuperOver}
+          onStartSuperOverSecondInnings={startSuperOverSecondInnings}
+          onRecordSuperOverBall={recordSuperOverBall}
           lastEvent={lastEvent}
           animationType={animationType}
         />
