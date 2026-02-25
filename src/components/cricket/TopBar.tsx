@@ -12,17 +12,19 @@ export default function TopBar({
   const { isDark, toggle } = useDarkMode();
 
   return (
-    <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-md border-b border-border">
-      <div className="max-w-4xl mx-auto flex items-center justify-between px-4 py-2.5">
-        <div className="flex items-center gap-2">
-          <span className="text-xl">🏏</span>
-          <span className="font-bold text-foreground text-sm">Cricket Scorer</span>
+    <header className="sticky top-0 z-50 bg-card/60 backdrop-blur-xl border-b border-border/50">
+      <div className="max-w-4xl mx-auto flex items-center justify-between px-4 py-3">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg bg-primary/15 flex items-center justify-center">
+            <span className="text-lg">🏏</span>
+          </div>
+          <span className="font-bold text-foreground tracking-tight">Cricket Scorer</span>
         </div>
         <div className="flex items-center gap-1">
           {showExport && onExportPDF && (
             <button
               onClick={onExportPDF}
-              className="px-2.5 py-1.5 text-xs text-muted-foreground hover:text-foreground rounded-md hover:bg-muted transition-colors"
+              className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted/80 transition-all duration-200 active:scale-95"
               title="Export PDF"
             >
               📄 PDF
@@ -30,14 +32,14 @@ export default function TopBar({
           )}
           <button
             onClick={onShowHistory}
-            className="px-2.5 py-1.5 text-xs text-muted-foreground hover:text-foreground rounded-md hover:bg-muted transition-colors"
+            className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted/80 transition-all duration-200 active:scale-95"
             title="Match History"
           >
             📋 History
           </button>
           <button
             onClick={toggle}
-            className="px-2.5 py-1.5 text-xs text-muted-foreground hover:text-foreground rounded-md hover:bg-muted transition-colors"
+            className="w-8 h-8 flex items-center justify-center text-sm text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted/80 transition-all duration-200 active:scale-95"
             title="Toggle theme"
           >
             {isDark ? "☀️" : "🌙"}

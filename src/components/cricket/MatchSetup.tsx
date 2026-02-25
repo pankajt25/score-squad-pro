@@ -20,31 +20,57 @@ export default function MatchSetup({ onSubmit }: MatchSetupProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-stadium">
       <div className="w-full max-w-md slide-up">
-        <div className="text-center mb-8">
-          <div className="text-5xl mb-3">🏏</div>
-          <h1 className="text-3xl font-bold text-foreground">Cricket Scorer</h1>
-          <p className="text-muted-foreground mt-2">Set up your match</p>
+        <div className="text-center mb-10">
+          <div className="text-6xl mb-4 inline-block" style={{ animation: 'float 3s ease-in-out infinite' }}>🏏</div>
+          <h1 className="text-4xl font-extrabold text-foreground tracking-tight">Cricket Scorer</h1>
+          <p className="text-muted-foreground mt-2 text-sm">Ball-by-ball live scoring</p>
         </div>
-        <form onSubmit={handleSubmit} className="bg-card rounded-lg border border-border p-6 space-y-4">
-          <div>
-            <label className="text-sm font-medium text-muted-foreground mb-1 block">Team A</label>
-            <Input value={teamA} onChange={e => setTeamA(e.target.value)} placeholder="e.g. India" className="bg-muted border-border" required />
+        <form onSubmit={handleSubmit} className="glass-card rounded-2xl p-6 space-y-5">
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wider">Team A</label>
+              <Input value={teamA} onChange={e => setTeamA(e.target.value)} placeholder="India" className="bg-muted/50 border-border/50 h-11 rounded-xl" required />
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wider">Team B</label>
+              <Input value={teamB} onChange={e => setTeamB(e.target.value)} placeholder="Australia" className="bg-muted/50 border-border/50 h-11 rounded-xl" required />
+            </div>
           </div>
           <div>
-            <label className="text-sm font-medium text-muted-foreground mb-1 block">Team B</label>
-            <Input value={teamB} onChange={e => setTeamB(e.target.value)} placeholder="e.g. Australia" className="bg-muted border-border" required />
+            <label className="text-xs font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wider">Venue</label>
+            <Input value={venue} onChange={e => setVenue(e.target.value)} placeholder="Wankhede Stadium, Mumbai" className="bg-muted/50 border-border/50 h-11 rounded-xl" required />
           </div>
           <div>
-            <label className="text-sm font-medium text-muted-foreground mb-1 block">Venue</label>
-            <Input value={venue} onChange={e => setVenue(e.target.value)} placeholder="e.g. Wankhede Stadium" className="bg-muted border-border" required />
+            <label className="text-xs font-semibold text-muted-foreground mb-1.5 block uppercase tracking-wider">Overs</label>
+            <div className="flex gap-2">
+              {[5, 10, 20, 50].map(o => (
+                <button
+                  key={o}
+                  type="button"
+                  onClick={() => setOvers(String(o))}
+                  className={`flex-1 h-10 rounded-xl text-sm font-bold transition-all duration-200 ${
+                    parseInt(overs) === o
+                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
+                      : "bg-muted/50 text-muted-foreground hover:bg-muted"
+                  }`}
+                >
+                  {o}
+                </button>
+              ))}
+            </div>
+            <Input
+              type="number"
+              min="1"
+              max="50"
+              value={overs}
+              onChange={e => setOvers(e.target.value)}
+              className="bg-muted/50 border-border/50 h-10 rounded-xl mt-2 text-center font-mono"
+              required
+            />
           </div>
-          <div>
-            <label className="text-sm font-medium text-muted-foreground mb-1 block">Overs</label>
-            <Input type="number" min="1" max="50" value={overs} onChange={e => setOvers(e.target.value)} className="bg-muted border-border" required />
-          </div>
-          <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-semibold text-base py-5">
+          <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-bold text-base h-12 rounded-xl shadow-lg shadow-primary/20 transition-all duration-200 active:scale-[0.98]">
             Next: Add Players →
           </Button>
         </form>

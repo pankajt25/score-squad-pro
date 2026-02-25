@@ -71,14 +71,12 @@ export default function LiveScorecard({
   };
 
   return (
-    <div id="scorecard-export" className="min-h-screen p-3 md:p-6 max-w-4xl mx-auto space-y-4 pt-4">
+    <div id="scorecard-export" className="min-h-screen p-3 md:p-6 max-w-4xl mx-auto space-y-4 pt-4 bg-field stagger-in">
       {/* Ball Animation Overlay */}
       {lastBallType && animationType && (
         <div key={ballAnimKey} className="fixed inset-0 pointer-events-none z-40 flex items-center justify-center">
-          <div className={`text-6xl md:text-8xl bounce-in ${
-            lastBallType === "wicket" ? "text-destructive" :
-            lastBallType === "six" ? "" :
-            lastBallType === "four" ? "" : ""
+          <div className={`text-7xl md:text-9xl bounce-in ${
+            lastBallType === "wicket" ? "text-destructive" : ""
           }`}>
             {lastBallType === "wicket" ? "🔴" :
              lastBallType === "six" ? "💥" :
@@ -88,22 +86,22 @@ export default function LiveScorecard({
       )}
 
       {/* Header Score */}
-      <div className={`bg-card rounded-lg border border-border p-4 glow-green transition-all ${
+      <div className={`glass-card rounded-2xl p-5 glow-green transition-all ${
         lastBallType === "six" && animationType ? "six-flash" :
         lastBallType === "four" && animationType ? "four-flash" : ""
       }`}>
         <div className="flex items-center justify-between mb-2">
           <div>
-            <h2 className="text-lg font-bold text-foreground">{innings.battingTeam}</h2>
+            <h2 className="text-xl font-extrabold text-foreground tracking-tight">{innings.battingTeam}</h2>
             <p className="text-xs text-muted-foreground">vs {innings.bowlingTeam} · {match.venue}</p>
           </div>
-          <div className={`text-xs px-2 py-1 rounded font-medium ${isSuperOver ? "bg-accent/20 text-accent" : "bg-primary/20 text-primary"}`}>
-            {isSuperOver ? "Super Over" : match.currentInnings === 0 ? "1st Innings" : "2nd Innings"}
+          <div className={`text-xs px-3 py-1.5 rounded-lg font-bold ${isSuperOver ? "bg-accent/20 text-accent" : "bg-primary/15 text-primary"}`}>
+            {isSuperOver ? "⚡ Super Over" : match.currentInnings === 0 ? "1st Innings" : "2nd Innings"}
           </div>
         </div>
 
         <div className="flex items-baseline gap-3">
-          <span className={`text-4xl font-bold font-mono text-foreground ${animationType === "score" ? "score-pulse" : ""}`}>
+          <span className={`text-5xl font-extrabold font-mono text-foreground ${animationType === "score" ? "score-pulse" : ""}`}>
             {innings.totalRuns}/{innings.totalWickets}
           </span>
           <span className="text-lg text-muted-foreground font-mono">({oversStr} ov)</span>
@@ -126,28 +124,28 @@ export default function LiveScorecard({
         )}
       </div>
 
-      <div className="bg-card rounded-lg border border-border overflow-hidden">
-        <div className="px-4 py-2 border-b border-border bg-muted/50 flex items-center justify-between">
-          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Batting</span>
+      <div className="glass-card rounded-2xl overflow-hidden">
+        <div className="px-4 py-2.5 border-b border-border/50 bg-muted/30 flex items-center justify-between">
+          <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Batting</span>
           {!isInningsBreak && !isCompleted && (
-            <div className="flex gap-2">
-              <button onClick={onSwapStrike} className="text-xs text-primary hover:underline">Swap Strike</button>
-              <button onClick={() => setShowBatsmanSelect(showBatsmanSelect ? null : "striker")} className="text-xs text-primary hover:underline">Change</button>
+            <div className="flex gap-3">
+              <button onClick={onSwapStrike} className="text-xs font-medium text-primary hover:text-primary/80 transition-colors active:scale-95">⇄ Swap</button>
+              <button onClick={() => setShowBatsmanSelect(showBatsmanSelect ? null : "striker")} className="text-xs font-medium text-primary hover:text-primary/80 transition-colors active:scale-95">✎ Change</button>
             </div>
           )}
         </div>
         {showBatsmanSelect && (
-          <div className="p-3 border-b border-border bg-muted/30 space-y-2">
+          <div className="p-3 border-b border-border/50 bg-muted/20 space-y-2">
             <div className="flex gap-2 mb-1">
-              <Button size="sm" variant={showBatsmanSelect === "striker" ? "default" : "outline"} onClick={() => setShowBatsmanSelect("striker")} className="text-xs">Striker</Button>
-              <Button size="sm" variant={showBatsmanSelect === "nonStriker" ? "default" : "outline"} onClick={() => setShowBatsmanSelect("nonStriker")} className="text-xs">Non-Striker</Button>
+              <Button size="sm" variant={showBatsmanSelect === "striker" ? "default" : "outline"} onClick={() => setShowBatsmanSelect("striker")} className="text-xs rounded-lg">Striker</Button>
+              <Button size="sm" variant={showBatsmanSelect === "nonStriker" ? "default" : "outline"} onClick={() => setShowBatsmanSelect("nonStriker")} className="text-xs rounded-lg">Non-Striker</Button>
             </div>
             <div className="flex flex-wrap gap-2">
               {innings.batsmen.map((b, i) => {
                 const isCurrent = i === innings.currentBatsmanIndex || i === innings.nonStrikerIndex;
                 if (b.isOut || isCurrent) return null;
                 return (
-                  <Button key={i} size="sm" variant="outline" onClick={() => { onChangeBatsman(showBatsmanSelect, i); setShowBatsmanSelect(null); }} className="text-xs">
+                  <Button key={i} size="sm" variant="outline" onClick={() => { onChangeBatsman(showBatsmanSelect, i); setShowBatsmanSelect(null); }} className="text-xs rounded-lg">
                     {b.name}
                   </Button>
                 );
@@ -157,34 +155,34 @@ export default function LiveScorecard({
         )}
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-xs text-muted-foreground border-b border-border">
-              <th className="text-left p-2 pl-4">Batter</th>
-              <th className="text-right p-2">R</th>
-              <th className="text-right p-2">B</th>
-              <th className="text-right p-2">4s</th>
-              <th className="text-right p-2">6s</th>
-              <th className="text-right p-2 pr-4">SR</th>
+            <tr className="text-xs text-muted-foreground border-b border-border/50">
+              <th className="text-left p-2.5 pl-4">Batter</th>
+              <th className="text-right p-2.5">R</th>
+              <th className="text-right p-2.5">B</th>
+              <th className="text-right p-2.5">4s</th>
+              <th className="text-right p-2.5">6s</th>
+              <th className="text-right p-2.5 pr-4">SR</th>
             </tr>
           </thead>
           <tbody>
             {striker && striker.isAtCrease && (
-              <tr className="border-b border-border/50">
-                <td className="p-2 pl-4 text-foreground font-medium">{striker.name} <span className="text-primary">*</span></td>
-                <td className="text-right p-2 font-mono font-bold text-foreground">{striker.runs}</td>
-                <td className="text-right p-2 font-mono text-muted-foreground">{striker.balls}</td>
-                <td className="text-right p-2 font-mono text-muted-foreground">{striker.fours}</td>
-                <td className="text-right p-2 font-mono text-muted-foreground">{striker.sixes}</td>
-                <td className="text-right p-2 pr-4 font-mono text-muted-foreground">{getStrikeRate(striker.runs, striker.balls)}</td>
+              <tr className="border-b border-border/30">
+                <td className="p-2.5 pl-4 text-foreground font-semibold">{striker.name} <span className="text-primary font-bold">*</span></td>
+                <td className="text-right p-2.5 font-mono font-bold text-foreground text-base">{striker.runs}</td>
+                <td className="text-right p-2.5 font-mono text-muted-foreground">{striker.balls}</td>
+                <td className="text-right p-2.5 font-mono text-muted-foreground">{striker.fours}</td>
+                <td className="text-right p-2.5 font-mono text-muted-foreground">{striker.sixes}</td>
+                <td className="text-right p-2.5 pr-4 font-mono text-muted-foreground">{getStrikeRate(striker.runs, striker.balls)}</td>
               </tr>
             )}
             {nonStriker && nonStriker.isAtCrease && (
               <tr>
-                <td className="p-2 pl-4 text-foreground">{nonStriker.name}</td>
-                <td className="text-right p-2 font-mono font-bold text-foreground">{nonStriker.runs}</td>
-                <td className="text-right p-2 font-mono text-muted-foreground">{nonStriker.balls}</td>
-                <td className="text-right p-2 font-mono text-muted-foreground">{nonStriker.fours}</td>
-                <td className="text-right p-2 font-mono text-muted-foreground">{nonStriker.sixes}</td>
-                <td className="text-right p-2 pr-4 font-mono text-muted-foreground">{getStrikeRate(nonStriker.runs, nonStriker.balls)}</td>
+                <td className="p-2.5 pl-4 text-foreground">{nonStriker.name}</td>
+                <td className="text-right p-2.5 font-mono font-bold text-foreground text-base">{nonStriker.runs}</td>
+                <td className="text-right p-2.5 font-mono text-muted-foreground">{nonStriker.balls}</td>
+                <td className="text-right p-2.5 font-mono text-muted-foreground">{nonStriker.fours}</td>
+                <td className="text-right p-2.5 font-mono text-muted-foreground">{nonStriker.sixes}</td>
+                <td className="text-right p-2.5 pr-4 font-mono text-muted-foreground">{getStrikeRate(nonStriker.runs, nonStriker.balls)}</td>
               </tr>
             )}
           </tbody>
@@ -192,15 +190,15 @@ export default function LiveScorecard({
       </div>
 
       {/* Bowler */}
-      <div className="bg-card rounded-lg border border-border overflow-hidden">
-        <div className="px-4 py-2 border-b border-border bg-muted/50 flex items-center justify-between">
-          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Bowling</span>
-          <button onClick={() => setShowBowlerSelect(!showBowlerSelect)} className="text-xs text-primary hover:underline">Change</button>
+      <div className="glass-card rounded-2xl overflow-hidden">
+        <div className="px-4 py-2.5 border-b border-border/50 bg-muted/30 flex items-center justify-between">
+          <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Bowling</span>
+          <button onClick={() => setShowBowlerSelect(!showBowlerSelect)} className="text-xs font-medium text-primary hover:text-primary/80 transition-colors active:scale-95">✎ Change</button>
         </div>
         {showBowlerSelect && (
-          <div className="p-3 border-b border-border bg-muted/30 flex flex-wrap gap-2">
+          <div className="p-3 border-b border-border/50 bg-muted/20 flex flex-wrap gap-2">
             {innings.bowlers.map((b, i) => (
-              <Button key={i} size="sm" variant={i === innings.currentBowlerIndex ? "default" : "outline"} onClick={() => { onSelectBowler(i); setShowBowlerSelect(false); }} className="text-xs">
+              <Button key={i} size="sm" variant={i === innings.currentBowlerIndex ? "default" : "outline"} onClick={() => { onSelectBowler(i); setShowBowlerSelect(false); }} className="text-xs rounded-lg">
                 {b.name}
               </Button>
             ))}
@@ -208,21 +206,21 @@ export default function LiveScorecard({
         )}
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-xs text-muted-foreground border-b border-border">
-              <th className="text-left p-2 pl-4">Bowler</th>
-              <th className="text-right p-2">O</th>
-              <th className="text-right p-2">R</th>
-              <th className="text-right p-2">W</th>
-              <th className="text-right p-2 pr-4">Econ</th>
+            <tr className="text-xs text-muted-foreground border-b border-border/50">
+              <th className="text-left p-2.5 pl-4">Bowler</th>
+              <th className="text-right p-2.5">O</th>
+              <th className="text-right p-2.5">R</th>
+              <th className="text-right p-2.5">W</th>
+              <th className="text-right p-2.5 pr-4">Econ</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td className="p-2 pl-4 text-foreground font-medium">{bowler.name}</td>
-              <td className="text-right p-2 font-mono text-muted-foreground">{getBowlerOversString(bowler.overs, bowler.ballsInCurrentOver)}</td>
-              <td className="text-right p-2 font-mono text-foreground">{bowler.runsConceded}</td>
-              <td className="text-right p-2 font-mono font-bold text-primary">{bowler.wickets}</td>
-              <td className="text-right p-2 pr-4 font-mono text-muted-foreground">{getEconomy(bowler.runsConceded, bowler.overs, bowler.ballsInCurrentOver)}</td>
+              <td className="p-2.5 pl-4 text-foreground font-semibold">{bowler.name}</td>
+              <td className="text-right p-2.5 font-mono text-muted-foreground">{getBowlerOversString(bowler.overs, bowler.ballsInCurrentOver)}</td>
+              <td className="text-right p-2.5 font-mono text-foreground">{bowler.runsConceded}</td>
+              <td className="text-right p-2.5 font-mono font-bold text-primary text-base">{bowler.wickets}</td>
+              <td className="text-right p-2.5 pr-4 font-mono text-muted-foreground">{getEconomy(bowler.runsConceded, bowler.overs, bowler.ballsInCurrentOver)}</td>
             </tr>
           </tbody>
         </table>
@@ -230,30 +228,31 @@ export default function LiveScorecard({
 
       {/* Scoring Controls */}
       {!isInningsBreak && !isSuperOverBreak && !isSuperOverInningsBreak && !isCompleted && (match.matchStatus === "live" || isSuperOver) && (
-        <div className="bg-card rounded-lg border border-border p-4 space-y-3">
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Score</p>
+        <div className="glass-card rounded-2xl p-5 space-y-4">
+          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Score</p>
           <div className="grid grid-cols-7 gap-2">
             {[0, 1, 2, 3, 4, 5, 6].map(r => (
-              <Button key={r} variant="outline" onClick={() => handleRuns(r)}
-                className={`font-mono font-bold text-lg h-12 transition-transform active:scale-90 ${
-                  r === 4 ? "border-cricket-blue text-cricket-blue hover:bg-cricket-blue/10" :
-                  r === 6 ? "border-cricket-purple text-cricket-purple hover:bg-cricket-purple/10" : ""
+              <button key={r} onClick={() => handleRuns(r)}
+                className={`font-mono font-bold text-lg h-12 rounded-xl border transition-all duration-150 active:scale-90 hover:shadow-md ${
+                  r === 4 ? "border-cricket-blue text-cricket-blue hover:bg-cricket-blue/10 hover:shadow-cricket-blue/20" :
+                  r === 6 ? "border-cricket-purple text-cricket-purple hover:bg-cricket-purple/10 hover:shadow-cricket-purple/20" :
+                  "border-border text-foreground hover:bg-muted/50"
                 }`}>
                 {r}
-              </Button>
+              </button>
             ))}
           </div>
           <div className="grid grid-cols-3 gap-2">
-            <Button variant="outline" onClick={handleWide} className="text-sm border-accent text-accent active:scale-95 transition-transform">Wide</Button>
-            <Button variant="outline" onClick={handleNoBall} className="text-sm border-accent text-accent active:scale-95 transition-transform">No Ball</Button>
-            <Button variant="outline" onClick={() => handleWicket("bowled")} className="text-sm border-destructive text-destructive font-bold active:scale-95 transition-transform">Wicket</Button>
+            <button onClick={handleWide} className="h-10 rounded-xl border border-accent/50 text-accent text-sm font-bold active:scale-95 transition-all hover:bg-accent/10">Wide</button>
+            <button onClick={handleNoBall} className="h-10 rounded-xl border border-accent/50 text-accent text-sm font-bold active:scale-95 transition-all hover:bg-accent/10">No Ball</button>
+            <button onClick={() => handleWicket("bowled")} className="h-10 rounded-xl border border-destructive/50 text-destructive text-sm font-extrabold active:scale-95 transition-all hover:bg-destructive/10">🔴 Wicket</button>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5">
             {["Caught", "LBW", "Run Out", "Stumped", "Hit Wicket"].map(w => (
-              <Button key={w} size="sm" variant="ghost" onClick={() => handleWicket(w.toLowerCase())}
-                className="text-xs text-muted-foreground hover:text-destructive">
+              <button key={w} onClick={() => handleWicket(w.toLowerCase())}
+                className="text-xs font-medium text-muted-foreground hover:text-destructive px-3 py-1.5 rounded-lg hover:bg-destructive/10 transition-all">
                 {w}
-              </Button>
+              </button>
             ))}
           </div>
         </div>
@@ -261,13 +260,13 @@ export default function LiveScorecard({
 
       {/* Innings Break */}
       {isInningsBreak && (
-        <div className="bg-card rounded-lg border border-border p-6 text-center space-y-4 bounce-in">
-          <h3 className="text-xl font-bold text-foreground">Innings Break</h3>
+        <div className="glass-card rounded-2xl p-8 text-center space-y-4 bounce-in">
+          <h3 className="text-2xl font-extrabold text-foreground">Innings Break</h3>
           <p className="text-muted-foreground">
-            {match.innings[0]?.battingTeam} scored <span className="text-primary font-mono font-bold">{match.innings[0]?.totalRuns}/{match.innings[0]?.totalWickets}</span>
+            {match.innings[0]?.battingTeam} scored <span className="text-primary font-mono font-bold text-lg">{match.innings[0]?.totalRuns}/{match.innings[0]?.totalWickets}</span>
           </p>
-          <p className="text-accent font-semibold">Target: {(match.innings[0]?.totalRuns ?? 0) + 1}</p>
-          <Button onClick={onStartSecondInnings} className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold">
+          <p className="text-accent font-bold text-xl">Target: {(match.innings[0]?.totalRuns ?? 0) + 1}</p>
+          <Button onClick={onStartSecondInnings} className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold h-12 rounded-xl shadow-lg shadow-primary/20">
             Start 2nd Innings →
           </Button>
         </div>
@@ -275,14 +274,14 @@ export default function LiveScorecard({
 
       {/* Super Over Break (after tie) */}
       {isSuperOverBreak && (
-        <div className="bg-card rounded-lg border border-accent/50 p-6 text-center space-y-4 bounce-in">
-          <div className="text-4xl">⚡</div>
-          <h3 className="text-xl font-bold text-foreground">Match Tied!</h3>
+        <div className="glass-card rounded-2xl p-8 text-center space-y-4 bounce-in glow-gold">
+          <div className="text-5xl">⚡</div>
+          <h3 className="text-2xl font-extrabold text-foreground">Match Tied!</h3>
           <p className="text-muted-foreground">
-            Both teams scored <span className="text-primary font-mono font-bold">{match.innings[0]?.totalRuns}</span> runs
+            Both teams scored <span className="text-primary font-mono font-bold text-lg">{match.innings[0]?.totalRuns}</span> runs
           </p>
-          <p className="text-accent font-semibold text-lg">Super Over Required!</p>
-          <Button onClick={onStartSuperOver} className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold">
+          <p className="text-accent font-bold text-xl">Super Over Required!</p>
+          <Button onClick={onStartSuperOver} className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold h-12 rounded-xl shadow-lg shadow-accent/20">
             Start Super Over ⚡
           </Button>
         </div>
@@ -290,14 +289,14 @@ export default function LiveScorecard({
 
       {/* Super Over Innings Break */}
       {isSuperOverInningsBreak && match.superOver?.innings[0] && (
-        <div className="bg-card rounded-lg border border-accent/50 p-6 text-center space-y-4 bounce-in">
-          <div className="text-4xl">⚡</div>
-          <h3 className="text-xl font-bold text-foreground">Super Over — Innings Break</h3>
+        <div className="glass-card rounded-2xl p-8 text-center space-y-4 bounce-in glow-gold">
+          <div className="text-5xl">⚡</div>
+          <h3 className="text-2xl font-extrabold text-foreground">Super Over — Innings Break</h3>
           <p className="text-muted-foreground">
-            {match.superOver.innings[0].battingTeam} scored <span className="text-primary font-mono font-bold">{match.superOver.innings[0].totalRuns}/{match.superOver.innings[0].totalWickets}</span>
+            {match.superOver.innings[0].battingTeam} scored <span className="text-primary font-mono font-bold text-lg">{match.superOver.innings[0].totalRuns}/{match.superOver.innings[0].totalWickets}</span>
           </p>
-          <p className="text-accent font-semibold">Target: {match.superOver.innings[0].totalRuns + 1}</p>
-          <Button onClick={onStartSuperOverSecondInnings} className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold">
+          <p className="text-accent font-bold text-xl">Target: {match.superOver.innings[0].totalRuns + 1}</p>
+          <Button onClick={onStartSuperOverSecondInnings} className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold h-12 rounded-xl shadow-lg shadow-accent/20">
             Start 2nd Super Over Innings →
           </Button>
         </div>
@@ -305,30 +304,30 @@ export default function LiveScorecard({
 
       {/* Match Completed */}
       {isCompleted && (
-        <div className="bg-card rounded-lg border border-primary/50 p-6 text-center space-y-3 glow-green bounce-in">
-          <div className="text-4xl">🏆</div>
-          <h3 className="text-xl font-bold text-foreground">
+        <div className="glass-card rounded-2xl p-8 text-center space-y-4 glow-green bounce-in">
+          <div className="text-6xl" style={{ animation: 'float 3s ease-in-out infinite' }}>🏆</div>
+          <h3 className="text-2xl font-extrabold text-foreground">
             {match.winner === "Tie" ? "Match Tied!" : `${match.winner} Won!`}
           </h3>
-          {match.winMargin && <p className="text-primary font-medium">{match.winMargin === "Super Over" ? "via Super Over" : `by ${match.winMargin}`}</p>}
-          <div className="flex gap-2 justify-center mt-4">
-            <Button onClick={onResetMatch} variant="outline">New Match</Button>
+          {match.winMargin && <p className="text-primary font-bold text-lg">{match.winMargin === "Super Over" ? "via Super Over ⚡" : `by ${match.winMargin}`}</p>}
+          <div className="flex gap-3 justify-center mt-4">
+            <Button onClick={onResetMatch} variant="outline" className="rounded-xl font-bold h-11 px-6">New Match</Button>
           </div>
         </div>
       )}
 
       {/* This Over with ball-by-ball animations */}
       {innings.ballLog.length > 0 && (
-        <div className="bg-card rounded-lg border border-border p-4">
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">This Over</p>
-          <div className="flex flex-wrap gap-1.5">
+        <div className="glass-card rounded-2xl p-4">
+          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">This Over</p>
+          <div className="flex flex-wrap gap-2">
             {innings.ballLog
               .filter(b => b.over === innings.totalOvers || (innings.ballsInCurrentOver === 0 && b.over === innings.totalOvers - 1))
               .slice(-8)
               .map((b, i, arr) => {
                 const isLast = i === arr.length - 1;
                 return (
-                  <span key={`${ballAnimKey}-${i}`} className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-xs font-mono font-bold border transition-all
+                  <span key={`${ballAnimKey}-${i}`} className={`inline-flex items-center justify-center w-9 h-9 rounded-full text-xs font-mono font-bold border-2 transition-all
                     ${isLast ? "ball-pop" : ""}
                     ${b.isWicket ? "bg-destructive/20 border-destructive text-destructive" :
                       b.isWide || b.isNoBall ? "bg-accent/20 border-accent text-accent" :
@@ -347,11 +346,11 @@ export default function LiveScorecard({
 
       {/* Fall of Wickets */}
       {innings.fallOfWickets.length > 0 && (
-        <div className="bg-card rounded-lg border border-border p-4">
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Fall of Wickets</p>
+        <div className="glass-card rounded-2xl p-4">
+          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">Fall of Wickets</p>
           <div className="flex flex-wrap gap-2">
             {innings.fallOfWickets.map((fow, i) => (
-              <span key={i} className="text-xs bg-muted px-2 py-1 rounded font-mono text-muted-foreground">
+              <span key={i} className="text-xs bg-destructive/10 text-destructive/80 px-3 py-1.5 rounded-lg font-mono border border-destructive/20">
                 {fow.score}/{fow.wicketNumber} ({fow.overs} ov) — {fow.batsmanName}
               </span>
             ))}
@@ -360,71 +359,71 @@ export default function LiveScorecard({
       )}
 
       {/* Full Batting Card */}
-      <div className="bg-card rounded-lg border border-border overflow-hidden">
-        <div className="px-4 py-2 border-b border-border bg-muted/50">
-          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Full Batting Card</span>
+      <div className="glass-card rounded-2xl overflow-hidden">
+        <div className="px-4 py-2.5 border-b border-border/50 bg-muted/30">
+          <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Full Batting Card</span>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-xs text-muted-foreground border-b border-border">
-                <th className="text-left p-2 pl-4">Batter</th>
-                <th className="text-left p-2">Status</th>
-                <th className="text-right p-2">R</th>
-                <th className="text-right p-2">B</th>
-                <th className="text-right p-2">4s</th>
-                <th className="text-right p-2">6s</th>
-                <th className="text-right p-2 pr-4">SR</th>
+              <tr className="text-xs text-muted-foreground border-b border-border/50">
+                <th className="text-left p-2.5 pl-4">Batter</th>
+                <th className="text-left p-2.5">Status</th>
+                <th className="text-right p-2.5">R</th>
+                <th className="text-right p-2.5">B</th>
+                <th className="text-right p-2.5">4s</th>
+                <th className="text-right p-2.5">6s</th>
+                <th className="text-right p-2.5 pr-4">SR</th>
               </tr>
             </thead>
             <tbody>
               {innings.batsmen.filter(b => b.balls > 0 || b.isAtCrease).map((b, i) => (
-                <tr key={i} className="border-b border-border/30">
-                  <td className="p-2 pl-4 text-foreground">{b.name} {b.isOnStrike && <span className="text-primary">*</span>}</td>
-                  <td className="p-2 text-xs text-muted-foreground">{b.isOut ? b.dismissal : b.isAtCrease ? "batting" : "not out"}</td>
-                  <td className="text-right p-2 font-mono font-bold text-foreground">{b.runs}</td>
-                  <td className="text-right p-2 font-mono text-muted-foreground">{b.balls}</td>
-                  <td className="text-right p-2 font-mono text-muted-foreground">{b.fours}</td>
-                  <td className="text-right p-2 font-mono text-muted-foreground">{b.sixes}</td>
-                  <td className="text-right p-2 pr-4 font-mono text-muted-foreground">{getStrikeRate(b.runs, b.balls)}</td>
+                <tr key={i} className="border-b border-border/20 hover:bg-muted/20 transition-colors">
+                  <td className="p-2.5 pl-4 text-foreground font-medium">{b.name} {b.isOnStrike && <span className="text-primary font-bold">*</span>}</td>
+                  <td className="p-2.5 text-xs text-muted-foreground">{b.isOut ? <span className="text-destructive/70">{b.dismissal}</span> : b.isAtCrease ? <span className="text-primary">batting</span> : "not out"}</td>
+                  <td className="text-right p-2.5 font-mono font-bold text-foreground">{b.runs}</td>
+                  <td className="text-right p-2.5 font-mono text-muted-foreground">{b.balls}</td>
+                  <td className="text-right p-2.5 font-mono text-muted-foreground">{b.fours}</td>
+                  <td className="text-right p-2.5 font-mono text-muted-foreground">{b.sixes}</td>
+                  <td className="text-right p-2.5 pr-4 font-mono text-muted-foreground">{getStrikeRate(b.runs, b.balls)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <div className="px-4 py-2 border-t border-border text-xs text-muted-foreground">
-          Extras: {innings.extras.total} (wd {innings.extras.wides}, nb {innings.extras.noBalls})
+        <div className="px-4 py-2.5 border-t border-border/50 text-xs text-muted-foreground font-medium">
+          Extras: <span className="text-foreground font-mono">{innings.extras.total}</span> (wd {innings.extras.wides}, nb {innings.extras.noBalls})
         </div>
       </div>
 
       {/* Full Bowling Card */}
-      <div className="bg-card rounded-lg border border-border overflow-hidden">
-        <div className="px-4 py-2 border-b border-border bg-muted/50">
-          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Bowling</span>
+      <div className="glass-card rounded-2xl overflow-hidden">
+        <div className="px-4 py-2.5 border-b border-border/50 bg-muted/30">
+          <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Bowling</span>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-xs text-muted-foreground border-b border-border">
-                <th className="text-left p-2 pl-4">Bowler</th>
-                <th className="text-right p-2">O</th>
-                <th className="text-right p-2">R</th>
-                <th className="text-right p-2">W</th>
-                <th className="text-right p-2">Wd</th>
-                <th className="text-right p-2">NB</th>
-                <th className="text-right p-2 pr-4">Econ</th>
+              <tr className="text-xs text-muted-foreground border-b border-border/50">
+                <th className="text-left p-2.5 pl-4">Bowler</th>
+                <th className="text-right p-2.5">O</th>
+                <th className="text-right p-2.5">R</th>
+                <th className="text-right p-2.5">W</th>
+                <th className="text-right p-2.5">Wd</th>
+                <th className="text-right p-2.5">NB</th>
+                <th className="text-right p-2.5 pr-4">Econ</th>
               </tr>
             </thead>
             <tbody>
               {innings.bowlers.filter(b => b.overs > 0 || b.ballsInCurrentOver > 0).map((b, i) => (
-                <tr key={i} className="border-b border-border/30">
-                  <td className="p-2 pl-4 text-foreground">{b.name} {b.isBowling && <span className="text-primary">•</span>}</td>
-                  <td className="text-right p-2 font-mono text-muted-foreground">{getBowlerOversString(b.overs, b.ballsInCurrentOver)}</td>
-                  <td className="text-right p-2 font-mono text-foreground">{b.runsConceded}</td>
-                  <td className="text-right p-2 font-mono font-bold text-primary">{b.wickets}</td>
-                  <td className="text-right p-2 font-mono text-muted-foreground">{b.wides}</td>
-                  <td className="text-right p-2 font-mono text-muted-foreground">{b.noBalls}</td>
-                  <td className="text-right p-2 pr-4 font-mono text-muted-foreground">{getEconomy(b.runsConceded, b.overs, b.ballsInCurrentOver)}</td>
+                <tr key={i} className="border-b border-border/20 hover:bg-muted/20 transition-colors">
+                  <td className="p-2.5 pl-4 text-foreground font-medium">{b.name} {b.isBowling && <span className="text-primary">●</span>}</td>
+                  <td className="text-right p-2.5 font-mono text-muted-foreground">{getBowlerOversString(b.overs, b.ballsInCurrentOver)}</td>
+                  <td className="text-right p-2.5 font-mono text-foreground">{b.runsConceded}</td>
+                  <td className="text-right p-2.5 font-mono font-bold text-primary">{b.wickets}</td>
+                  <td className="text-right p-2.5 font-mono text-muted-foreground">{b.wides}</td>
+                  <td className="text-right p-2.5 font-mono text-muted-foreground">{b.noBalls}</td>
+                  <td className="text-right p-2.5 pr-4 font-mono text-muted-foreground">{getEconomy(b.runsConceded, b.overs, b.ballsInCurrentOver)}</td>
                 </tr>
               ))}
             </tbody>
@@ -433,8 +432,8 @@ export default function LiveScorecard({
       </div>
 
       {/* Reset */}
-      <div className="text-center pt-2 pb-8">
-        <button onClick={onResetMatch} className="text-xs text-muted-foreground hover:text-destructive transition-colors">
+      <div className="text-center pt-4 pb-10">
+        <button onClick={onResetMatch} className="text-xs font-medium text-muted-foreground hover:text-destructive transition-all duration-200 px-4 py-2 rounded-lg hover:bg-destructive/10">
           Reset Match
         </button>
       </div>

@@ -16,7 +16,6 @@ export default function Toss({ teamA, teamB, onSubmit }: TossProps) {
   const handleFlip = () => {
     setFlipping(true);
     setFlipDone(false);
-    // Random winner
     const randomWinner = Math.random() > 0.5 ? teamA : teamB;
     setTimeout(() => {
       setWinner(randomWinner);
@@ -26,61 +25,83 @@ export default function Toss({ teamA, teamB, onSubmit }: TossProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-stadium">
       <div className="w-full max-w-sm slide-up text-center">
-        <div className={`text-5xl mb-4 inline-block ${flipping ? "coin-flip" : flipDone ? "bounce-in" : ""}`} style={{ perspective: "1000px" }}>
-          🪙
+        {/* Coin */}
+        <div className="relative inline-block mb-6">
+          <div className={`text-6xl ${flipping ? "coin-flip" : flipDone ? "bounce-in" : ""}`} style={{ perspective: "1000px" }}>
+            🪙
+          </div>
+          {flipping && (
+            <div className="absolute inset-0 rounded-full" style={{ animation: 'pulse-ring 1s infinite' }} />
+          )}
         </div>
-        <h2 className="text-2xl font-bold text-foreground mb-6">Toss</h2>
 
-        <div className="bg-card rounded-lg border border-border p-6 space-y-5">
+        <h2 className="text-3xl font-extrabold text-foreground mb-2 tracking-tight">The Toss</h2>
+        <p className="text-muted-foreground text-sm mb-6">Who calls it right?</p>
+
+        <div className="glass-card rounded-2xl p-6 space-y-6">
+          {/* Winner selection */}
           <div>
-            <p className="text-sm text-muted-foreground mb-2">Who won the toss?</p>
-            <div className="flex gap-2 mb-2">
-              <Button
-                variant={winner === teamA ? "default" : "outline"}
-                className={winner === teamA ? "flex-1 bg-primary text-primary-foreground" : "flex-1"}
+            <p className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wider">Toss Winner</p>
+            <div className="flex gap-2">
+              <button
+                className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all duration-200 ${
+                  winner === teamA
+                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
+                    : "bg-muted/50 text-muted-foreground hover:bg-muted"
+                }`}
                 onClick={() => { setWinner(teamA); setFlipDone(false); }}
-              >{teamA}</Button>
-              <Button
-                variant={winner === teamB ? "default" : "outline"}
-                className={winner === teamB ? "flex-1 bg-primary text-primary-foreground" : "flex-1"}
+              >{teamA}</button>
+              <button
+                className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all duration-200 ${
+                  winner === teamB
+                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
+                    : "bg-muted/50 text-muted-foreground hover:bg-muted"
+                }`}
                 onClick={() => { setWinner(teamB); setFlipDone(false); }}
-              >{teamB}</Button>
+              >{teamB}</button>
             </div>
             <button
               onClick={handleFlip}
               disabled={flipping}
-              className="text-xs text-primary hover:underline disabled:opacity-50"
+              className="mt-3 text-xs font-medium text-primary hover:text-primary/80 disabled:opacity-50 transition-colors"
             >
-              🎲 Random toss
+              🎲 Flip coin randomly
             </button>
           </div>
 
           {flipDone && (
-            <div className="text-sm text-primary font-medium bounce-in">
+            <div className="text-sm text-primary font-bold bounce-in bg-primary/10 py-2 px-4 rounded-xl">
               🎉 {winner} won the toss!
             </div>
           )}
 
+          {/* Decision */}
           <div>
-            <p className="text-sm text-muted-foreground mb-2">Elected to?</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wider">Elected to</p>
             <div className="flex gap-2">
-              <Button
-                variant={decision === "bat" ? "default" : "outline"}
-                className={decision === "bat" ? "flex-1 bg-accent text-accent-foreground" : "flex-1"}
+              <button
+                className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all duration-200 ${
+                  decision === "bat"
+                    ? "bg-accent text-accent-foreground shadow-lg shadow-accent/25"
+                    : "bg-muted/50 text-muted-foreground hover:bg-muted"
+                }`}
                 onClick={() => setDecision("bat")}
-              >🏏 Bat</Button>
-              <Button
-                variant={decision === "bowl" ? "default" : "outline"}
-                className={decision === "bowl" ? "flex-1 bg-accent text-accent-foreground" : "flex-1"}
+              >🏏 Bat</button>
+              <button
+                className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all duration-200 ${
+                  decision === "bowl"
+                    ? "bg-accent text-accent-foreground shadow-lg shadow-accent/25"
+                    : "bg-muted/50 text-muted-foreground hover:bg-muted"
+                }`}
                 onClick={() => setDecision("bowl")}
-              >⚾ Bowl</Button>
+              >⚾ Bowl</button>
             </div>
           </div>
 
-          <Button onClick={() => onSubmit(winner, decision)} className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-semibold py-5">
-            Start Match →
+          <Button onClick={() => onSubmit(winner, decision)} className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-bold text-base h-12 rounded-xl shadow-lg shadow-primary/20 transition-all duration-200 active:scale-[0.98]">
+            Start Match 🔥
           </Button>
         </div>
       </div>
