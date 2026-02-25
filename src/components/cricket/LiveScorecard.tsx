@@ -11,12 +11,15 @@ interface LiveScorecardProps {
   onChangeBatsman: (position: "striker" | "nonStriker", newBatsmanIndex: number) => void;
   onStartSecondInnings?: () => void;
   onResetMatch: () => void;
+  onStartSuperOver?: () => void;
+  onStartSuperOverSecondInnings?: () => void;
+  onRecordSuperOverBall?: (input: ScoreInput) => void;
   lastEvent: string;
   animationType: "score" | "wicket" | null;
 }
 
 export default function LiveScorecard({
-  match, innings, onRecordBall, onSelectBowler, onSwapStrike, onChangeBatsman, onStartSecondInnings, onResetMatch, lastEvent, animationType,
+  match, innings, onRecordBall, onSelectBowler, onSwapStrike, onChangeBatsman, onStartSecondInnings, onResetMatch, onStartSuperOver, onStartSuperOverSecondInnings, onRecordSuperOverBall, lastEvent, animationType,
 }: LiveScorecardProps) {
   const [showBowlerSelect, setShowBowlerSelect] = useState(false);
   const [showBatsmanSelect, setShowBatsmanSelect] = useState<"striker" | "nonStriker" | null>(null);
@@ -44,13 +47,28 @@ export default function LiveScorecard({
   const nonStriker = innings.batsmen[innings.nonStrikerIndex];
   const bowler = innings.bowlers[innings.currentBowlerIndex];
 
-  const isInningsBreak = match.matchStatus === "innings_break";
+  const isInningsBreak = match.matchStatus === "innings_break" && !match.superOver;
+  const isSuperOverBreak = match.matchStatus === "super_over_break";
+  const isSuperOver = match.matchStatus === "super_over";
+  const isSuperOverInningsBreak = match.matchStatus === "innings_break" && !!match.superOver;
   const isCompleted = match.matchStatus === "completed";
 
-  const handleRuns = (runs: number) => onRecordBall({ type: "runs", runs });
-  const handleWide = () => onRecordBall({ type: "wide", runs: 0 });
-  const handleNoBall = () => onRecordBall({ type: "noBall", runs: 0 });
-  const handleWicket = (type: string) => onRecordBall({ type: "wicket", wicketType: type });
+  const handleRuns = (runs: number) => {
+    if (isSuperOver && onRecordSuperOverBall) onRecordSuperOverBall({ type: "runs", runs });
+    else onRecordBall({ type: "runs", runs });
+  };
+  const handleWide = () => {
+    if (isSuperOver && onRecordSuperOverBall) onRecordSuperOverBall({ type: "wide", runs: 0 });
+    else onRecordBall({ type: "wide", runs: 0 });
+  };
+  const handleNoBall = () => {
+    if (isSuperOver && onRecordSuperOverBall) onRecordSuperOverBall({ type: "noBall", runs: 0 });
+    else onRecordBall({ type: "noBall", runs: 0 });
+  };
+  const handleWicket = (type: string) => {
+    if (isSuperOver && onRecordSuperOverBall) onRecordSuperOverBall({ type: "wicket", wicketType: type });
+    else onRecordBall({ type: "wicket", wicketType: type });
+  };
 
   return (
     <div id="scorecard-export" className="min-h-screen p-3 md:p-6 max-w-4xl mx-auto space-y-4 pt-4">
@@ -79,8 +97,8 @@ export default function LiveScorecard({
             <h2 className="text-lg font-bold text-foreground">{innings.battingTeam}</h2>
             <p className="text-xs text-muted-foreground">vs {innings.bowlingTeam} · {match.venue}</p>
           </div>
-          <div className="text-xs px-2 py-1 rounded bg-primary/20 text-primary font-medium">
-            {match.currentInnings === 0 ? "1st Innings" : "2nd Innings"}
+          <div className={`text-xs px-2 py-1 rounded font-medium ${isSuperOver ? "bg-accent/20 text-accent" : "bg-primary/20 text-primary"}`}>
+            {isSuperOver ? "Super Over" : match.currentInnings === 0 ? "1st Innings" : "2nd Innings"}
           </div>
         </div>
 
@@ -211,7 +229,7 @@ export default function LiveScorecard({
       </div>
 
       {/* Scoring Controls */}
-      {!isInningsBreak && !isCompleted && (
+      {!isInningsBreak && !isSuperOverBreak && !isSuperOverInningsBreak && !isCompleted && (match.matchStatus === "live" || isSuperOver) && (
         <div className="bg-card rounded-lg border border-border p-4 space-y-3">
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Score</p>
           <div className="grid grid-cols-7 gap-2">
@@ -255,6 +273,36 @@ export default function LiveScorecard({
         </div>
       )}
 
+      {/* Super Over Break (after tie) */}
+      {isSuperOverBreak && (
+        <div className="bg-card rounded-lg border border-accent/50 p-6 text-center space-y-4 bounce-in">
+          <div className="text-4xl">⚡</div>
+          <h3 className="text-xl font-bold text-foreground">Match Tied!</h3>
+          <p className="text-muted-foreground">
+            Both teams scored <span className="text-primary font-mono font-bold">{match.innings[0]?.totalRuns}</span> runs
+          </p>
+          <p className="text-accent font-semibold text-lg">Super Over Required!</p>
+          <Button onClick={onStartSuperOver} className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold">
+            Start Super Over ⚡
+          </Button>
+        </div>
+      )}
+
+      {/* Super Over Innings Break */}
+      {isSuperOverInningsBreak && match.superOver?.innings[0] && (
+        <div className="bg-card rounded-lg border border-accent/50 p-6 text-center space-y-4 bounce-in">
+          <div className="text-4xl">⚡</div>
+          <h3 className="text-xl font-bold text-foreground">Super Over — Innings Break</h3>
+          <p className="text-muted-foreground">
+            {match.superOver.innings[0].battingTeam} scored <span className="text-primary font-mono font-bold">{match.superOver.innings[0].totalRuns}/{match.superOver.innings[0].totalWickets}</span>
+          </p>
+          <p className="text-accent font-semibold">Target: {match.superOver.innings[0].totalRuns + 1}</p>
+          <Button onClick={onStartSuperOverSecondInnings} className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold">
+            Start 2nd Super Over Innings →
+          </Button>
+        </div>
+      )}
+
       {/* Match Completed */}
       {isCompleted && (
         <div className="bg-card rounded-lg border border-primary/50 p-6 text-center space-y-3 glow-green bounce-in">
@@ -262,7 +310,7 @@ export default function LiveScorecard({
           <h3 className="text-xl font-bold text-foreground">
             {match.winner === "Tie" ? "Match Tied!" : `${match.winner} Won!`}
           </h3>
-          {match.winMargin && <p className="text-primary font-medium">by {match.winMargin}</p>}
+          {match.winMargin && <p className="text-primary font-medium">{match.winMargin === "Super Over" ? "via Super Over" : `by ${match.winMargin}`}</p>}
           <div className="flex gap-2 justify-center mt-4">
             <Button onClick={onResetMatch} variant="outline">New Match</Button>
           </div>

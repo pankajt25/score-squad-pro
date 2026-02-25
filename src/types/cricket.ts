@@ -71,10 +71,14 @@ export interface MatchData {
   tossDecision: "bat" | "bowl";
   innings: [InningsData | null, InningsData | null];
   currentInnings: 0 | 1;
-  matchStatus: "setup" | "players" | "toss" | "live" | "innings_break" | "completed";
+  matchStatus: "setup" | "players" | "toss" | "live" | "innings_break" | "completed" | "super_over_break" | "super_over";
   winner: string | null;
   winMargin: string | null;
   createdAt: string;
+  superOver?: {
+    innings: [InningsData | null, InningsData | null];
+    currentInnings: 0 | 1;
+  };
 }
 
 export type ScoreInput = {
