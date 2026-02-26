@@ -16,6 +16,7 @@ const Index = () => {
     createMatch, setPlayers, setToss, recordBall,
     startSecondInnings, selectBowler, swapStrike, changeBatsman, resetMatch,
     startSuperOver, startSuperOverSecondInnings, recordSuperOverBall,
+    undoLastBall,
   } = useCricketMatch();
 
   const [showHistory, setShowHistory] = useState(false);
@@ -100,6 +101,7 @@ const Index = () => {
           onStartSuperOver={startSuperOver}
           onStartSuperOverSecondInnings={startSuperOverSecondInnings}
           onRecordSuperOverBall={recordSuperOverBall}
+          onUndoLastBall={undoLastBall}
           lastEvent={lastEvent}
           animationType={animationType}
         />
