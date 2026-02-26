@@ -78,7 +78,9 @@ export interface MatchData {
   superOver?: {
     innings: [InningsData | null, InningsData | null];
     currentInnings: 0 | 1;
+    round: number; // which super over round (1, 2, 3...)
   };
+  originalOversLimit?: number; // store original overs before super over
 }
 
 export type ScoreInput = {

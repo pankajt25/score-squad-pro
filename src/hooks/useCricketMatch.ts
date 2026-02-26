@@ -336,13 +336,16 @@ export function useCricketMatch() {
       const battingPlayers = battingFirst === prev.teamA ? prev.teamAPlayers : prev.teamBPlayers;
       const bowlingPlayers = bowlingFirst === prev.teamA ? prev.teamAPlayers : prev.teamBPlayers;
       const soInnings = createEmptyInnings(battingFirst, bowlingFirst, battingPlayers, bowlingPlayers);
+      const round = prev.superOver ? prev.superOver.round + 1 : 1;
       return {
         ...prev,
         matchStatus: "super_over",
         oversLimit: 1,
+        originalOversLimit: prev.originalOversLimit ?? prev.oversLimit,
         superOver: {
           innings: [soInnings, null],
           currentInnings: 0,
+          round,
         },
       };
     });
@@ -505,20 +508,22 @@ export function useCricketMatch() {
       if (newInnings.isCompleted) {
         if (soInningsIdx === 0) {
           status = "innings_break" as const;
-          // We'll use a special flag to know it's SO innings break
         } else {
-          status = "completed" as const;
           const first = newSOInnings[0]!;
           const second = newInnings;
           if (second.totalRuns > first.totalRuns) {
             winner = second.battingTeam;
-            winMargin = `Super Over`;
+            winMargin = `Super Over${prev.superOver.round > 1 ? ` (Round ${prev.superOver.round})` : ""}`;
+            status = "completed" as const;
           } else if (first.totalRuns > second.totalRuns) {
             winner = first.battingTeam;
-            winMargin = `Super Over`;
+            winMargin = `Super Over${prev.superOver.round > 1 ? ` (Round ${prev.superOver.round})` : ""}`;
+            status = "completed" as const;
           } else {
-            winner = "Tie";
-            winMargin = "Super Over tied too!";
+            // Super over tied — trigger another super over
+            winner = null;
+            winMargin = null;
+            status = "super_over_break" as const;
           }
         }
       }
@@ -537,8 +542,42 @@ export function useCricketMatch() {
     });
   }, []);
 
+  const undoLastBall = useCallback(() => {
+    setMatch(prev => {
+      if (!prev) return prev;
+      const saved = localStorage.getItem(STORAGE_KEY + "-undo");
+      if (saved) {
+        try {
+          const restored = JSON.parse(saved);
+          setLastEvent("Undo");
+          return restored;
+        } catch { return prev; }
+      }
+      return prev;
+    });
+  }, []);
+
+  // Save undo snapshot before each ball
+  const recordBallWithUndo = useCallback((input: ScoreInput) => {
+    setMatch(prev => {
+      if (prev) localStorage.setItem(STORAGE_KEY + "-undo", JSON.stringify(prev));
+      return prev;
+    });
+    // Use setTimeout to ensure undo state is saved before the ball is recorded
+    setTimeout(() => recordBall(input), 0);
+  }, [recordBall]);
+
+  const recordSuperOverBallWithUndo = useCallback((input: ScoreInput) => {
+    setMatch(prev => {
+      if (prev) localStorage.setItem(STORAGE_KEY + "-undo", JSON.stringify(prev));
+      return prev;
+    });
+    setTimeout(() => recordSuperOverBall(input), 0);
+  }, [recordSuperOverBall]);
+
   const resetMatch = useCallback(() => {
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(STORAGE_KEY + "-undo");
     setMatch(null);
     setLastEvent("");
   }, []);
@@ -555,7 +594,7 @@ export function useCricketMatch() {
     createMatch,
     setPlayers,
     setToss,
-    recordBall,
+    recordBall: recordBallWithUndo,
     startSecondInnings,
     selectBowler,
     swapStrike,
@@ -563,6 +602,7 @@ export function useCricketMatch() {
     resetMatch,
     startSuperOver,
     startSuperOverSecondInnings,
-    recordSuperOverBall,
+    recordSuperOverBall: recordSuperOverBallWithUndo,
+    undoLastBall,
   };
 }
