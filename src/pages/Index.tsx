@@ -14,7 +14,8 @@ const Index = () => {
   const {
     match, currentInnings, lastEvent, animationType,
     createMatch, setPlayers, setToss, recordBall,
-    startSecondInnings, selectBowler, swapStrike, changeBatsman, resetMatch,
+    startSecondInnings, selectBowler, swapStrike, changeBatsman,
+    retireBatsman, unretireBatsman, resetMatch,
     startSuperOver, startSuperOverSecondInnings, recordSuperOverBall,
     undoLastBall,
   } = useCricketMatch();
@@ -96,6 +97,8 @@ const Index = () => {
           onSelectBowler={selectBowler}
           onSwapStrike={swapStrike}
           onChangeBatsman={changeBatsman}
+          onRetireBatsman={retireBatsman}
+          onUnretireBatsman={unretireBatsman}
           onStartSecondInnings={startSecondInnings}
           onResetMatch={resetMatch}
           onStartSuperOver={startSuperOver}

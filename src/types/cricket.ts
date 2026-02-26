@@ -5,6 +5,7 @@ export interface BatsmanStats {
   fours: number;
   sixes: number;
   isOut: boolean;
+  isRetiredHurt: boolean;
   dismissal: string;
   isOnStrike: boolean;
   isAtCrease: boolean; // currently batting
@@ -57,6 +58,7 @@ export interface BallEvent {
   batsmanName: string;
   bowlerName: string;
   description: string;
+  timestamp: string;
 }
 
 export interface MatchData {
@@ -135,6 +137,7 @@ export function createEmptyInnings(
       fours: 0,
       sixes: 0,
       isOut: false,
+      isRetiredHurt: false,
       dismissal: "",
       isOnStrike: i === 0,
       isAtCrease: i < 2,

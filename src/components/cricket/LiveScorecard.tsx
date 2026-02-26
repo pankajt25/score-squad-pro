@@ -10,6 +10,8 @@ interface LiveScorecardProps {
   onSelectBowler: (index: number) => void;
   onSwapStrike: () => void;
   onChangeBatsman: (position: "striker" | "nonStriker", newBatsmanIndex: number) => void;
+  onRetireBatsman: (position: "striker" | "nonStriker") => void;
+  onUnretireBatsman: (batsmanIndex: number, position: "striker" | "nonStriker") => void;
   onStartSecondInnings?: () => void;
   onResetMatch: () => void;
   onStartSuperOver?: () => void;
@@ -21,13 +23,15 @@ interface LiveScorecardProps {
 }
 
 export default function LiveScorecard({
-  match, innings, onRecordBall, onSelectBowler, onSwapStrike, onChangeBatsman, onStartSecondInnings, onResetMatch, onStartSuperOver, onStartSuperOverSecondInnings, onRecordSuperOverBall, onUndoLastBall, lastEvent, animationType,
+  match, innings, onRecordBall, onSelectBowler, onSwapStrike, onChangeBatsman, onRetireBatsman, onUnretireBatsman, onStartSecondInnings, onResetMatch, onStartSuperOver, onStartSuperOverSecondInnings, onRecordSuperOverBall, onUndoLastBall, lastEvent, animationType,
 }: LiveScorecardProps) {
   const [showBowlerSelect, setShowBowlerSelect] = useState(false);
   const [showBatsmanSelect, setShowBatsmanSelect] = useState<"striker" | "nonStriker" | null>(null);
   const [ballAnimKey, setBallAnimKey] = useState(0);
   const [lastBallType, setLastBallType] = useState<string>("");
   const [showViz, setShowViz] = useState(false);
+  const [showCommentary, setShowCommentary] = useState(false);
+  const [showRetiredHurt, setShowRetiredHurt] = useState<"striker" | "nonStriker" | null>(null);
 
   useEffect(() => {
     if (innings.ballLog.length > 0) {
@@ -163,6 +167,7 @@ export default function LiveScorecard({
             <div className="flex gap-3">
               <button onClick={onSwapStrike} className="text-xs font-medium text-primary hover:text-primary/80 transition-colors active:scale-95">⇄ Swap</button>
               <button onClick={() => setShowBatsmanSelect(showBatsmanSelect ? null : "striker")} className="text-xs font-medium text-primary hover:text-primary/80 transition-colors active:scale-95">✎ Change</button>
+              <button onClick={() => setShowRetiredHurt(showRetiredHurt ? null : "striker")} className="text-xs font-medium text-accent hover:text-accent/80 transition-colors active:scale-95">🏥 Retire</button>
             </div>
           )}
         </div>
@@ -180,6 +185,39 @@ export default function LiveScorecard({
                   <Button key={i} size="sm" variant="outline" onClick={() => { onChangeBatsman(showBatsmanSelect, i); setShowBatsmanSelect(null); }} className="text-xs rounded-lg">
                     {b.name}
                   </Button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+        {showRetiredHurt && (
+          <div className="p-3 border-b border-border/50 bg-accent/5 space-y-2">
+            <p className="text-xs font-bold text-accent">Retire Hurt — Select position:</p>
+            <div className="flex gap-2 mb-1">
+              <Button size="sm" variant={showRetiredHurt === "striker" ? "default" : "outline"} onClick={() => setShowRetiredHurt("striker")} className="text-xs rounded-lg">Striker</Button>
+              <Button size="sm" variant={showRetiredHurt === "nonStriker" ? "default" : "outline"} onClick={() => setShowRetiredHurt("nonStriker")} className="text-xs rounded-lg">Non-Striker</Button>
+            </div>
+            <Button size="sm" variant="destructive" onClick={() => { onRetireBatsman(showRetiredHurt); setShowRetiredHurt(null); }} className="text-xs rounded-lg">
+              🏥 Retire {showRetiredHurt === "striker" ? striker?.name : nonStriker?.name}
+            </Button>
+          </div>
+        )}
+        {/* Unretire: show retired hurt batsmen who can return */}
+        {innings.batsmen.some(b => b.isRetiredHurt) && !isInningsBreak && !isCompleted && (
+          <div className="p-3 border-b border-border/50 bg-primary/5 space-y-2">
+            <p className="text-xs font-bold text-primary">🏥 Retired Hurt — Tap to bring back:</p>
+            <div className="flex flex-wrap gap-2">
+              {innings.batsmen.map((b, i) => {
+                if (!b.isRetiredHurt) return null;
+                return (
+                  <div key={i} className="flex gap-1">
+                    <Button size="sm" variant="outline" onClick={() => { onUnretireBatsman(i, "striker"); }} className="text-xs rounded-lg border-primary/30">
+                      {b.name} ({b.runs}*) → Striker
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={() => { onUnretireBatsman(i, "nonStriker"); }} className="text-xs rounded-lg border-primary/30">
+                      → Non-Striker
+                    </Button>
+                  </div>
                 );
               })}
             </div>
@@ -490,7 +528,7 @@ export default function LiveScorecard({
               {innings.batsmen.filter(b => b.balls > 0 || b.isAtCrease).map((b, i) => (
                 <tr key={i} className="border-b border-border/20 hover:bg-muted/20 transition-colors">
                   <td className="p-2.5 pl-4 text-foreground font-medium">{b.name} {b.isOnStrike && <span className="text-primary font-bold">*</span>}</td>
-                  <td className="p-2.5 text-xs text-muted-foreground">{b.isOut ? <span className="text-destructive/70">{b.dismissal}</span> : b.isAtCrease ? <span className="text-primary">batting</span> : "not out"}</td>
+                  <td className="p-2.5 text-xs text-muted-foreground">{b.isOut ? <span className="text-destructive/70">{b.dismissal}</span> : b.isRetiredHurt ? <span className="text-accent">retired hurt</span> : b.isAtCrease ? <span className="text-primary">batting</span> : "not out"}</td>
                   <td className="text-right p-2.5 font-mono font-bold text-foreground">{b.runs}</td>
                   <td className="text-right p-2.5 font-mono text-muted-foreground">{b.balls}</td>
                   <td className="text-right p-2.5 font-mono text-muted-foreground">{b.fours}</td>
@@ -540,6 +578,48 @@ export default function LiveScorecard({
           </table>
         </div>
       </div>
+
+      {/* Commentary Log */}
+      {innings.ballLog.length > 0 && (
+        <div className="glass-card rounded-2xl overflow-hidden">
+          <button
+            onClick={() => setShowCommentary(!showCommentary)}
+            className="w-full px-4 py-2.5 border-b border-border/50 bg-muted/30 flex items-center justify-between"
+          >
+            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">📝 Ball-by-Ball Commentary</span>
+            <span className="text-xs text-muted-foreground">{showCommentary ? "▲" : "▼"}</span>
+          </button>
+          {showCommentary && (
+            <div className="max-h-72 overflow-y-auto divide-y divide-border/20 fade-in">
+              {[...innings.ballLog].reverse().map((b, i) => {
+                const time = b.timestamp ? new Date(b.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
+                return (
+                  <div key={i} className="px-4 py-2.5 flex items-start gap-3 hover:bg-muted/10 transition-colors">
+                    <span className="text-xs font-mono text-muted-foreground whitespace-nowrap mt-0.5">
+                      {getOversString(b.over, b.ball)}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-foreground">
+                        <span className="font-medium">{b.bowlerName}</span> to <span className="font-medium">{b.batsmanName}</span>,{" "}
+                        <span className={`font-bold ${
+                          b.isWicket ? "text-destructive" :
+                          b.runs === 6 ? "text-cricket-purple" :
+                          b.runs === 4 ? "text-cricket-blue" :
+                          b.isWide || b.isNoBall ? "text-accent" :
+                          "text-foreground"
+                        }`}>
+                          {b.description}
+                        </span>
+                      </p>
+                    </div>
+                    {time && <span className="text-[10px] text-muted-foreground/60 whitespace-nowrap mt-0.5">{time}</span>}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Reset */}
       <div className="text-center pt-4 pb-10">

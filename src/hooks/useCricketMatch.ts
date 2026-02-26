@@ -128,7 +128,7 @@ export function useCricketMatch() {
           batsmanName: striker.name,
         });
         // find next batsman
-        const nextIdx = newInnings.batsmen.findIndex(b => !b.isOut && !b.isAtCrease);
+        const nextIdx = newInnings.batsmen.findIndex(b => !b.isOut && !b.isAtCrease && !b.isRetiredHurt);
         if (nextIdx !== -1) {
           newInnings.batsmen[nextIdx].isAtCrease = true;
           newInnings.batsmen[nextIdx].isOnStrike = true;
@@ -192,12 +192,14 @@ export function useCricketMatch() {
         batsmanName: striker.name,
         bowlerName: bowler.name,
         description: desc,
+        timestamp: new Date().toISOString(),
       };
       newInnings.ballLog.push(event);
       setLastEvent(desc);
 
-      // check all out
-      if (newInnings.totalWickets >= newInnings.batsmen.length - 1) {
+      // check all out (exclude retired hurt as they can return)
+      const availableBatsmen = newInnings.batsmen.filter(b => !b.isOut && !b.isRetiredHurt).length;
+      if (availableBatsmen <= 1) {
         newInnings.isCompleted = true;
       }
       // check overs done
@@ -319,6 +321,62 @@ export function useCricketMatch() {
         newInnings.currentBatsmanIndex = newBatsmanIndex;
       } else {
         newInnings.nonStrikerIndex = newBatsmanIndex;
+      }
+      const newInningsArr: [InningsData | null, InningsData | null] = [...prev.innings];
+      newInningsArr[inningsIdx] = newInnings;
+      return { ...prev, innings: newInningsArr };
+    });
+  }, []);
+
+  const retireBatsman = useCallback((position: "striker" | "nonStriker") => {
+    setMatch(prev => {
+      if (!prev || prev.matchStatus !== "live") return prev;
+      const inningsIdx = prev.currentInnings;
+      const innings = prev.innings[inningsIdx];
+      if (!innings) return prev;
+      const newInnings: InningsData = JSON.parse(JSON.stringify(innings));
+      const idx = position === "striker" ? newInnings.currentBatsmanIndex : newInnings.nonStrikerIndex;
+      newInnings.batsmen[idx].isRetiredHurt = true;
+      newInnings.batsmen[idx].isAtCrease = false;
+      newInnings.batsmen[idx].isOnStrike = false;
+      newInnings.batsmen[idx].dismissal = "retired hurt";
+      // Find next available batsman
+      const nextIdx = newInnings.batsmen.findIndex(b => !b.isOut && !b.isAtCrease && !b.isRetiredHurt);
+      if (nextIdx !== -1) {
+        newInnings.batsmen[nextIdx].isAtCrease = true;
+        newInnings.batsmen[nextIdx].isOnStrike = position === "striker";
+        if (position === "striker") {
+          newInnings.currentBatsmanIndex = nextIdx;
+        } else {
+          newInnings.nonStrikerIndex = nextIdx;
+        }
+      }
+      const newInningsArr: [InningsData | null, InningsData | null] = [...prev.innings];
+      newInningsArr[inningsIdx] = newInnings;
+      return { ...prev, innings: newInningsArr };
+    });
+  }, []);
+
+  const unretireBatsman = useCallback((batsmanIndex: number, position: "striker" | "nonStriker") => {
+    setMatch(prev => {
+      if (!prev || prev.matchStatus !== "live") return prev;
+      const inningsIdx = prev.currentInnings;
+      const innings = prev.innings[inningsIdx];
+      if (!innings) return prev;
+      const newInnings: InningsData = JSON.parse(JSON.stringify(innings));
+      const oldIdx = position === "striker" ? newInnings.currentBatsmanIndex : newInnings.nonStrikerIndex;
+      // Move current batsman off crease
+      newInnings.batsmen[oldIdx].isAtCrease = false;
+      newInnings.batsmen[oldIdx].isOnStrike = false;
+      // Bring retired batsman back
+      newInnings.batsmen[batsmanIndex].isRetiredHurt = false;
+      newInnings.batsmen[batsmanIndex].dismissal = "";
+      newInnings.batsmen[batsmanIndex].isAtCrease = true;
+      newInnings.batsmen[batsmanIndex].isOnStrike = position === "striker";
+      if (position === "striker") {
+        newInnings.currentBatsmanIndex = batsmanIndex;
+      } else {
+        newInnings.nonStrikerIndex = batsmanIndex;
       }
       const newInningsArr: [InningsData | null, InningsData | null] = [...prev.innings];
       newInningsArr[inningsIdx] = newInnings;
@@ -478,6 +536,7 @@ export function useCricketMatch() {
         batsmanName: striker.name,
         bowlerName: bowler.name,
         description: desc,
+        timestamp: new Date().toISOString(),
       };
       newInnings.ballLog.push(event);
       setLastEvent(desc);
@@ -599,6 +658,8 @@ export function useCricketMatch() {
     selectBowler,
     swapStrike,
     changeBatsman,
+    retireBatsman,
+    unretireBatsman,
     resetMatch,
     startSuperOver,
     startSuperOverSecondInnings,
