@@ -17,7 +17,7 @@ const Index = () => {
     startSecondInnings, selectBowler, swapStrike, changeBatsman,
     retireBatsman, unretireBatsman, resetMatch,
     startSuperOver, startSuperOverSecondInnings, recordSuperOverBall,
-    undoLastBall,
+    undoLastBall, goBack,
   } = useCricketMatch();
 
   const [showHistory, setShowHistory] = useState(false);
@@ -72,7 +72,7 @@ const Index = () => {
     return (
       <>
         <TopBar onShowHistory={() => setShowHistory(true)} showExport={false} />
-        <PlayerEntry teamA={match.teamA} teamB={match.teamB} onSubmit={setPlayers} />
+        <PlayerEntry teamA={match.teamA} teamB={match.teamB} onSubmit={setPlayers} onBack={goBack} />
       </>
     );
   }
@@ -81,7 +81,7 @@ const Index = () => {
     return (
       <>
         <TopBar onShowHistory={() => setShowHistory(true)} showExport={false} />
-        <Toss teamA={match.teamA} teamB={match.teamB} onSubmit={setToss} />
+        <Toss teamA={match.teamA} teamB={match.teamB} onSubmit={setToss} onBack={goBack} />
       </>
     );
   }
