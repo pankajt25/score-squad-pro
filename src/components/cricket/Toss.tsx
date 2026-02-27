@@ -25,8 +25,8 @@ export default function Toss({ teamA, teamB, onSubmit }: TossProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-stadium">
-      <div className="w-full max-w-sm slide-up text-center">
+    <div className="min-h-[calc(100vh-56px)] flex items-center justify-center p-4 bg-stadium overflow-y-auto">
+      <div className="w-full max-w-sm slide-up text-center py-4">
         {/* Coin */}
         <div className="relative inline-block mb-6">
           <div className={`text-6xl ${flipping ? "coin-flip" : flipDone ? "bounce-in" : ""}`} style={{ perspective: "1000px" }}>
