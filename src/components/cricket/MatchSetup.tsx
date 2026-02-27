@@ -20,7 +20,7 @@ export default function MatchSetup({ onSubmit }: MatchSetupProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-stadium">
+    <div className="min-h-[calc(100vh-56px)] flex items-center justify-center p-4 bg-stadium">
       <div className="w-full max-w-md slide-up">
         <div className="text-center mb-10">
           <div className="text-6xl mb-4 inline-block" style={{ animation: 'float 3s ease-in-out infinite' }}>🏏</div>
