@@ -5,9 +5,10 @@ interface TossProps {
   teamA: string;
   teamB: string;
   onSubmit: (winner: string, decision: "bat" | "bowl") => void;
+  onBack?: () => void;
 }
 
-export default function Toss({ teamA, teamB, onSubmit }: TossProps) {
+export default function Toss({ teamA, teamB, onSubmit, onBack }: TossProps) {
   const [winner, setWinner] = useState(teamA);
   const [decision, setDecision] = useState<"bat" | "bowl">("bat");
   const [flipping, setFlipping] = useState(false);
@@ -25,8 +26,13 @@ export default function Toss({ teamA, teamB, onSubmit }: TossProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-stadium">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-stadium relative">
       <div className="w-full max-w-sm slide-up text-center">
+        {onBack && (
+          <button onClick={onBack} className="absolute left-4 top-4 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted/80 transition-all">
+            ← Back
+          </button>
+        )}
         {/* Coin */}
         <div className="relative inline-block mb-6">
           <div className={`text-6xl ${flipping ? "coin-flip" : flipDone ? "bounce-in" : ""}`} style={{ perspective: "1000px" }}>

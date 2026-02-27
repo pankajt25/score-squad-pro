@@ -641,6 +641,15 @@ export function useCricketMatch() {
     setLastEvent("");
   }, []);
 
+  const goBack = useCallback(() => {
+    setMatch(prev => {
+      if (!prev) return null;
+      if (prev.matchStatus === "players") return null;
+      if (prev.matchStatus === "toss") return { ...prev, matchStatus: "players" as const };
+      return prev;
+    });
+  }, []);
+
   const currentInnings = match?.superOver
     ? match.superOver.innings[match.superOver.currentInnings] ?? null
     : match?.innings[match.currentInnings] ?? null;
@@ -665,5 +674,6 @@ export function useCricketMatch() {
     startSuperOverSecondInnings,
     recordSuperOverBall: recordSuperOverBallWithUndo,
     undoLastBall,
+    goBack,
   };
 }
