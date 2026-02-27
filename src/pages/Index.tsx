@@ -71,8 +71,8 @@ const Index = () => {
   if (match.matchStatus === "players") {
     return (
       <>
-        <TopBar onShowHistory={() => setShowHistory(true)} showExport={false} />
-        <PlayerEntry teamA={match.teamA} teamB={match.teamB} onSubmit={setPlayers} onBack={goBack} />
+        <TopBar onShowHistory={() => setShowHistory(true)} showExport={false} onBack={goBack} />
+        <PlayerEntry teamA={match.teamA} teamB={match.teamB} onSubmit={setPlayers} />
       </>
     );
   }
@@ -80,8 +80,8 @@ const Index = () => {
   if (match.matchStatus === "toss") {
     return (
       <>
-        <TopBar onShowHistory={() => setShowHistory(true)} showExport={false} />
-        <Toss teamA={match.teamA} teamB={match.teamB} onSubmit={setToss} onBack={goBack} />
+        <TopBar onShowHistory={() => setShowHistory(true)} showExport={false} onBack={goBack} />
+        <Toss teamA={match.teamA} teamB={match.teamB} onSubmit={setToss} />
       </>
     );
   }

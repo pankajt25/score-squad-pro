@@ -6,10 +6,9 @@ interface PlayerEntryProps {
   teamA: string;
   teamB: string;
   onSubmit: (teamAPlayers: string[], teamBPlayers: string[]) => void;
-  onBack?: () => void;
 }
 
-export default function PlayerEntry({ teamA, teamB, onSubmit, onBack }: PlayerEntryProps) {
+export default function PlayerEntry({ teamA, teamB, onSubmit }: PlayerEntryProps) {
   const [teamAPlayers, setTeamAPlayers] = useState<string[]>(Array(11).fill(""));
   const [teamBPlayers, setTeamBPlayers] = useState<string[]>(Array(11).fill(""));
   const [activeTeam, setActiveTeam] = useState<"A" | "B">("A");
@@ -37,14 +36,9 @@ export default function PlayerEntry({ teamA, teamB, onSubmit, onBack }: PlayerEn
   const filledCount = currentPlayers.filter(p => p.trim()).length;
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-field relative">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-field">
       <div className="w-full max-w-md slide-up">
         <div className="text-center mb-6">
-          {onBack && (
-            <button onClick={onBack} className="absolute left-4 top-4 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted/80 transition-all">
-              ← Back
-            </button>
-          )}
           <h2 className="text-2xl font-extrabold text-foreground tracking-tight">Squad Selection</h2>
           <p className="text-muted-foreground text-sm mt-1">Enter player names — empty slots get defaults</p>
         </div>
