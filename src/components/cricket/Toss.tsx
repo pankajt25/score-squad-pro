@@ -29,8 +29,8 @@ export default function Toss({ teamA, teamB, onSubmit }: TossProps) {
       <div className="w-full max-w-sm slide-up text-center py-4">
         {/* Coin */}
         <div className="relative inline-block mb-6">
-          <div className={`text-6xl ${flipping ? "coin-flip" : flipDone ? "bounce-in" : ""}`} style={{ perspective: "1000px" }}>
-            🪙
+          <div className={`w-20 h-20 rounded-full bg-gradient-to-br from-yellow-400 to-amber-600 flex items-center justify-center text-3xl font-bold text-yellow-900 shadow-lg shadow-amber-500/30 ${flipping ? "coin-flip" : flipDone ? "bounce-in" : ""}`} style={{ perspective: "1000px" }}>
+            ₹
           </div>
           {flipping && (
             <div className="absolute inset-0 rounded-full" style={{ animation: 'pulse-ring 1s infinite' }} />
