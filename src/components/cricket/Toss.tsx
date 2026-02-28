@@ -7,6 +7,73 @@ interface TossProps {
   onSubmit: (winner: string, decision: "bat" | "bowl") => void;
 }
 
+// Web Audio API sound effects
+function playCoinFlipSound() {
+  const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+
+  const playClick = (time: number, freq: number, vol: number) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+    osc.type = "square";
+    osc.frequency.setValueAtTime(freq, time);
+    osc.frequency.exponentialRampToValueAtTime(freq * 0.5, time + 0.06);
+    filter.type = "bandpass";
+    filter.frequency.value = freq * 1.5;
+    filter.Q.value = 8;
+    gain.gain.setValueAtTime(vol, time);
+    gain.gain.exponentialRampToValueAtTime(0.001, time + 0.08);
+    osc.connect(filter).connect(gain).connect(ctx.destination);
+    osc.start(time);
+    osc.stop(time + 0.08);
+  };
+
+  const now = ctx.currentTime;
+  for (let i = 0; i < 14; i++) {
+    const t = now + i * (0.08 + i * 0.012);
+    const freq = 2800 + Math.random() * 600 - i * 80;
+    const vol = 0.12 - i * 0.006;
+    playClick(t, freq, Math.max(vol, 0.02));
+  }
+}
+
+function playCoinLandSound() {
+  const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+  const now = ctx.currentTime;
+
+  const osc1 = ctx.createOscillator();
+  const osc2 = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc1.type = "sine";
+  osc1.frequency.setValueAtTime(1800, now);
+  osc1.frequency.exponentialRampToValueAtTime(1200, now + 0.3);
+  osc2.type = "triangle";
+  osc2.frequency.setValueAtTime(3600, now);
+  osc2.frequency.exponentialRampToValueAtTime(2400, now + 0.2);
+  gain.gain.setValueAtTime(0.2, now);
+  gain.gain.exponentialRampToValueAtTime(0.08, now + 0.15);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+  osc1.connect(gain).connect(ctx.destination);
+  osc2.connect(gain);
+  osc1.start(now);
+  osc2.start(now);
+  osc1.stop(now + 0.5);
+  osc2.stop(now + 0.5);
+
+  // Settling bounces
+  [0.12, 0.2, 0.26].forEach((delay, i) => {
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = "sine";
+    o.frequency.value = 2200 - i * 300;
+    g.gain.setValueAtTime(0.06 - i * 0.015, now + delay);
+    g.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.06);
+    o.connect(g).connect(ctx.destination);
+    o.start(now + delay);
+    o.stop(now + delay + 0.06);
+  });
+}
+
 export default function Toss({ teamA, teamB, onSubmit }: TossProps) {
   const [winner, setWinner] = useState(teamA);
   const [decision, setDecision] = useState<"bat" | "bowl">("bat");
@@ -20,7 +87,8 @@ export default function Toss({ teamA, teamB, onSubmit }: TossProps) {
     setFlipDone(false);
     flipCountRef.current += 1;
 
-    // Use crypto for true unpredictability + timestamp entropy
+    playCoinFlipSound();
+
     const entropy = crypto.getRandomValues(new Uint32Array(1))[0];
     const timeSeed = Date.now() % 1000;
     const combined = (entropy + timeSeed + flipCountRef.current * 7919) % 100;
@@ -32,6 +100,7 @@ export default function Toss({ teamA, teamB, onSubmit }: TossProps) {
       setCoinSide(isHeads ? "heads" : "tails");
       setFlipping(false);
       setFlipDone(true);
+      playCoinLandSound();
     }, 2200);
   };
 
