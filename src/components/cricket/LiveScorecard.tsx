@@ -32,6 +32,8 @@ export default function LiveScorecard({
   const [showViz, setShowViz] = useState(false);
   const [showCommentary, setShowCommentary] = useState(false);
   const [showRetiredHurt, setShowRetiredHurt] = useState<"striker" | "nonStriker" | null>(null);
+  const [showWideExtras, setShowWideExtras] = useState(false);
+  const [showNoBallExtras, setShowNoBallExtras] = useState(false);
 
   useEffect(() => {
     if (innings.ballLog.length > 0) {
@@ -96,13 +98,15 @@ export default function LiveScorecard({
     if (isSuperOver && onRecordSuperOverBall) onRecordSuperOverBall({ type: "runs", runs });
     else onRecordBall({ type: "runs", runs });
   };
-  const handleWide = () => {
-    if (isSuperOver && onRecordSuperOverBall) onRecordSuperOverBall({ type: "wide", runs: 0 });
-    else onRecordBall({ type: "wide", runs: 0 });
+  const handleWide = (extraRuns: number = 0) => {
+    if (isSuperOver && onRecordSuperOverBall) onRecordSuperOverBall({ type: "wide", runs: extraRuns });
+    else onRecordBall({ type: "wide", runs: extraRuns });
+    setShowWideExtras(false);
   };
-  const handleNoBall = () => {
-    if (isSuperOver && onRecordSuperOverBall) onRecordSuperOverBall({ type: "noBall", runs: 0 });
-    else onRecordBall({ type: "noBall", runs: 0 });
+  const handleNoBall = (extraRuns: number = 0) => {
+    if (isSuperOver && onRecordSuperOverBall) onRecordSuperOverBall({ type: "noBall", runs: extraRuns });
+    else onRecordBall({ type: "noBall", runs: extraRuns });
+    setShowNoBallExtras(false);
   };
   const handleWicket = (type: string) => {
     if (isSuperOver && onRecordSuperOverBall) onRecordSuperOverBall({ type: "wicket", wicketType: type });
@@ -320,10 +324,32 @@ export default function LiveScorecard({
             ))}
           </div>
           <div className="grid grid-cols-3 gap-2">
-            <button onClick={handleWide} className="h-10 rounded-xl border border-accent/50 text-accent text-sm font-bold active:scale-95 transition-all hover:bg-accent/10">Wide</button>
-            <button onClick={handleNoBall} className="h-10 rounded-xl border border-accent/50 text-accent text-sm font-bold active:scale-95 transition-all hover:bg-accent/10">No Ball</button>
+            <button onClick={() => setShowWideExtras(!showWideExtras)} className={`h-10 rounded-xl border text-sm font-bold active:scale-95 transition-all ${showWideExtras ? "border-accent bg-accent/15 text-accent" : "border-accent/50 text-accent hover:bg-accent/10"}`}>Wide</button>
+            <button onClick={() => setShowNoBallExtras(!showNoBallExtras)} className={`h-10 rounded-xl border text-sm font-bold active:scale-95 transition-all ${showNoBallExtras ? "border-accent bg-accent/15 text-accent" : "border-accent/50 text-accent hover:bg-accent/10"}`}>No Ball</button>
             <button onClick={() => handleWicket("bowled")} className="h-10 rounded-xl border border-destructive/50 text-destructive text-sm font-extrabold active:scale-95 transition-all hover:bg-destructive/10">🔴 Wicket</button>
           </div>
+          {showWideExtras && (
+            <div className="flex flex-wrap gap-2 p-3 rounded-xl bg-accent/5 border border-accent/20">
+              <span className="text-xs font-bold text-accent w-full mb-1">Wide + extra runs:</span>
+              {[0, 1, 2, 3, 4].map(r => (
+                <button key={r} onClick={() => handleWide(r)}
+                  className="font-mono font-bold text-sm h-10 px-4 rounded-lg border border-accent/40 text-accent hover:bg-accent/15 active:scale-90 transition-all">
+                  {r === 0 ? "Wd" : `Wd+${r}`}
+                </button>
+              ))}
+            </div>
+          )}
+          {showNoBallExtras && (
+            <div className="flex flex-wrap gap-2 p-3 rounded-xl bg-accent/5 border border-accent/20">
+              <span className="text-xs font-bold text-accent w-full mb-1">No Ball + extra runs:</span>
+              {[0, 1, 2, 3, 4, 5, 6].map(r => (
+                <button key={r} onClick={() => handleNoBall(r)}
+                  className="font-mono font-bold text-sm h-10 px-4 rounded-lg border border-accent/40 text-accent hover:bg-accent/15 active:scale-90 transition-all">
+                  {r === 0 ? "NB" : `NB+${r}`}
+                </button>
+              ))}
+            </div>
+          )}
           <div className="flex flex-wrap gap-1.5">
             {["Caught", "LBW", "Run Out", "Stumped", "Hit Wicket"].map(w => (
               <button key={w} onClick={() => handleWicket(w.toLowerCase())}
