@@ -155,8 +155,15 @@ export default function LiveScorecard({
             <h2 className="text-xl font-extrabold text-foreground tracking-tight">{innings.battingTeam}</h2>
             <p className="text-xs text-muted-foreground">vs {innings.bowlingTeam} · {match.venue}</p>
           </div>
-          <div className={`text-xs px-3 py-1.5 rounded-lg font-bold ${isSuperOver ? "bg-accent/20 text-accent" : "bg-primary/15 text-primary"}`}>
-            {isSuperOver ? `⚡ Super Over${superOverRound > 1 ? ` #${superOverRound}` : ""}` : match.currentInnings === 0 ? "1st Innings" : "2nd Innings"}
+          <div className="flex items-center gap-2">
+            {match.matchMode && match.matchMode !== "custom" && (
+              <span className="text-[10px] px-2 py-1 rounded-md font-bold uppercase bg-muted/50 text-muted-foreground">
+                {match.matchMode === "t10" ? "T10" : match.matchMode === "t20" ? "T20" : match.matchMode === "odi" ? "ODI" : match.matchMode === "test" ? "TEST" : match.matchMode}
+              </span>
+            )}
+            <div className={`text-xs px-3 py-1.5 rounded-lg font-bold ${isSuperOver ? "bg-accent/20 text-accent" : "bg-primary/15 text-primary"}`}>
+              {isSuperOver ? `⚡ Super Over${superOverRound > 1 ? ` #${superOverRound}` : ""}` : match.currentInnings === 0 ? "1st Innings" : "2nd Innings"}
+            </div>
           </div>
         </div>
 
