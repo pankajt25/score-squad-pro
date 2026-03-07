@@ -67,6 +67,7 @@ export interface MatchData {
   teamB: string;
   venue: string;
   oversLimit: number;
+  matchMode: string; // "t10" | "t20" | "odi" | "test" | "custom"
   teamAPlayers: string[];
   teamBPlayers: string[];
   tossWinner: string;
@@ -80,9 +81,9 @@ export interface MatchData {
   superOver?: {
     innings: [InningsData | null, InningsData | null];
     currentInnings: 0 | 1;
-    round: number; // which super over round (1, 2, 3...)
+    round: number;
   };
-  originalOversLimit?: number; // store original overs before super over
+  originalOversLimit?: number;
 }
 
 export type ScoreInput = {
