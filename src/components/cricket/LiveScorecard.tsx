@@ -2,6 +2,7 @@ import { InningsData, getOversString, getRunRate, getStrikeRate, getEconomy, get
 import { Button } from "@/components/ui/button";
 import { useState, useEffect, useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from "recharts";
+import { playBoundaryFourSound, playSixSound, playWicketSound } from "@/lib/soundEffects";
 
 interface LiveScorecardProps {
   match: MatchData;
@@ -34,15 +35,25 @@ export default function LiveScorecard({
   const [showRetiredHurt, setShowRetiredHurt] = useState<"striker" | "nonStriker" | null>(null);
   const [showWideExtras, setShowWideExtras] = useState(false);
   const [showNoBallExtras, setShowNoBallExtras] = useState(false);
+  const [showByeExtras, setShowByeExtras] = useState(false);
+  const [showLegByeExtras, setShowLegByeExtras] = useState(false);
 
   useEffect(() => {
     if (innings.ballLog.length > 0) {
       const last = innings.ballLog[innings.ballLog.length - 1];
       setBallAnimKey(prev => prev + 1);
-      if (last.isWicket) setLastBallType("wicket");
-      else if (last.runs === 6) setLastBallType("six");
-      else if (last.runs === 4) setLastBallType("four");
-      else setLastBallType("normal");
+      if (last.isWicket) {
+        setLastBallType("wicket");
+        playWicketSound();
+      } else if (last.runs === 6) {
+        setLastBallType("six");
+        playSixSound();
+      } else if (last.runs === 4) {
+        setLastBallType("four");
+        playBoundaryFourSound();
+      } else {
+        setLastBallType("normal");
+      }
     }
   }, [innings.ballLog.length]);
 
