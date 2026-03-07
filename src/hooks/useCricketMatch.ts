@@ -32,13 +32,14 @@ export function useCricketMatch() {
     }
   }, [match]);
 
-  const createMatch = useCallback((teamA: string, teamB: string, venue: string, oversLimit: number) => {
+  const createMatch = useCallback((teamA: string, teamB: string, venue: string, oversLimit: number, matchMode: string = "t20") => {
     const newMatch: MatchData = {
       id: generateId(),
       teamA,
       teamB,
       venue,
       oversLimit,
+      matchMode,
       teamAPlayers: [],
       teamBPlayers: [],
       tossWinner: "",
