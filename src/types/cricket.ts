@@ -86,7 +86,7 @@ export interface MatchData {
 }
 
 export type ScoreInput = {
-  type: "runs" | "wide" | "noBall" | "wicket";
+  type: "runs" | "wide" | "noBall" | "wicket" | "bye" | "legBye";
   runs?: number;
   wicketType?: string;
 };
