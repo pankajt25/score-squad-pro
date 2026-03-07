@@ -123,6 +123,16 @@ export default function LiveScorecard({
     if (isSuperOver && onRecordSuperOverBall) onRecordSuperOverBall({ type: "wicket", wicketType: type });
     else onRecordBall({ type: "wicket", wicketType: type });
   };
+  const handleBye = (runs: number) => {
+    if (isSuperOver && onRecordSuperOverBall) onRecordSuperOverBall({ type: "bye", runs });
+    else onRecordBall({ type: "bye", runs });
+    setShowByeExtras(false);
+  };
+  const handleLegBye = (runs: number) => {
+    if (isSuperOver && onRecordSuperOverBall) onRecordSuperOverBall({ type: "legBye", runs });
+    else onRecordBall({ type: "legBye", runs });
+    setShowLegByeExtras(false);
+  };
 
   return (
     <div id="scorecard-export" className="min-h-screen p-3 md:p-6 max-w-4xl mx-auto space-y-4 pt-4 bg-field stagger-in">
