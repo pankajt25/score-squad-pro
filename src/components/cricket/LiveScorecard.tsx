@@ -349,6 +349,10 @@ export default function LiveScorecard({
             <button onClick={() => setShowNoBallExtras(!showNoBallExtras)} className={`h-10 rounded-xl border text-sm font-bold active:scale-95 transition-all ${showNoBallExtras ? "border-accent bg-accent/15 text-accent" : "border-accent/50 text-accent hover:bg-accent/10"}`}>No Ball</button>
             <button onClick={() => handleWicket("bowled")} className="h-10 rounded-xl border border-destructive/50 text-destructive text-sm font-extrabold active:scale-95 transition-all hover:bg-destructive/10">🔴 Wicket</button>
           </div>
+          <div className="grid grid-cols-2 gap-2">
+            <button onClick={() => setShowByeExtras(!showByeExtras)} className={`h-10 rounded-xl border text-sm font-bold active:scale-95 transition-all ${showByeExtras ? "border-primary bg-primary/15 text-primary" : "border-primary/50 text-primary hover:bg-primary/10"}`}>Bye</button>
+            <button onClick={() => setShowLegByeExtras(!showLegByeExtras)} className={`h-10 rounded-xl border text-sm font-bold active:scale-95 transition-all ${showLegByeExtras ? "border-primary bg-primary/15 text-primary" : "border-primary/50 text-primary hover:bg-primary/10"}`}>Leg Bye</button>
+          </div>
           {showWideExtras && (
             <div className="flex flex-wrap gap-2 p-3 rounded-xl bg-accent/5 border border-accent/20">
               <span className="text-xs font-bold text-accent w-full mb-1">Wide + extra runs:</span>
@@ -367,6 +371,28 @@ export default function LiveScorecard({
                 <button key={r} onClick={() => handleNoBall(r)}
                   className="font-mono font-bold text-sm h-10 px-4 rounded-lg border border-accent/40 text-accent hover:bg-accent/15 active:scale-90 transition-all">
                   {r === 0 ? "NB" : `NB+${r}`}
+                </button>
+              ))}
+            </div>
+          )}
+          {showByeExtras && (
+            <div className="flex flex-wrap gap-2 p-3 rounded-xl bg-primary/5 border border-primary/20">
+              <span className="text-xs font-bold text-primary w-full mb-1">Byes:</span>
+              {[1, 2, 3, 4].map(r => (
+                <button key={r} onClick={() => handleBye(r)}
+                  className="font-mono font-bold text-sm h-10 px-4 rounded-lg border border-primary/40 text-primary hover:bg-primary/15 active:scale-90 transition-all">
+                  {`B${r}`}
+                </button>
+              ))}
+            </div>
+          )}
+          {showLegByeExtras && (
+            <div className="flex flex-wrap gap-2 p-3 rounded-xl bg-primary/5 border border-primary/20">
+              <span className="text-xs font-bold text-primary w-full mb-1">Leg Byes:</span>
+              {[1, 2, 3, 4].map(r => (
+                <button key={r} onClick={() => handleLegBye(r)}
+                  className="font-mono font-bold text-sm h-10 px-4 rounded-lg border border-primary/40 text-primary hover:bg-primary/15 active:scale-90 transition-all">
+                  {`LB${r}`}
                 </button>
               ))}
             </div>
