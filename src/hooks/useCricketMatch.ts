@@ -137,6 +137,28 @@ export function useCricketMatch() {
         desc = `WICKET! ${striker.name} ${input.wicketType || "out"}`;
         setAnimationType("wicket");
         setTimeout(() => setAnimationType(null), 700);
+      } else if (input.type === "bye") {
+        isLegalBall = true;
+        newInnings.totalRuns += runs;
+        newInnings.extras.byes += runs;
+        newInnings.extras.total += runs;
+        striker.balls += 1;
+        desc = runs > 0 ? `${runs} Bye${runs > 1 ? "s" : ""}` : "Dot ball";
+        if (runs > 0) {
+          setAnimationType("score");
+          setTimeout(() => setAnimationType(null), 600);
+        }
+      } else if (input.type === "legBye") {
+        isLegalBall = true;
+        newInnings.totalRuns += runs;
+        newInnings.extras.legByes += runs;
+        newInnings.extras.total += runs;
+        striker.balls += 1;
+        desc = runs > 0 ? `${runs} Leg Bye${runs > 1 ? "s" : ""}` : "Dot ball";
+        if (runs > 0) {
+          setAnimationType("score");
+          setTimeout(() => setAnimationType(null), 600);
+        }
       } else {
         // normal runs
         isLegalBall = true;
@@ -489,6 +511,28 @@ export function useCricketMatch() {
         desc = `WICKET! ${striker.name} ${input.wicketType || "out"}`;
         setAnimationType("wicket");
         setTimeout(() => setAnimationType(null), 700);
+      } else if (input.type === "bye") {
+        isLegalBall = true;
+        newInnings.totalRuns += runs;
+        newInnings.extras.byes += runs;
+        newInnings.extras.total += runs;
+        striker.balls += 1;
+        desc = runs > 0 ? `${runs} Bye${runs > 1 ? "s" : ""}` : "Dot ball";
+        if (runs > 0) {
+          setAnimationType("score");
+          setTimeout(() => setAnimationType(null), 600);
+        }
+      } else if (input.type === "legBye") {
+        isLegalBall = true;
+        newInnings.totalRuns += runs;
+        newInnings.extras.legByes += runs;
+        newInnings.extras.total += runs;
+        striker.balls += 1;
+        desc = runs > 0 ? `${runs} Leg Bye${runs > 1 ? "s" : ""}` : "Dot ball";
+        if (runs > 0) {
+          setAnimationType("score");
+          setTimeout(() => setAnimationType(null), 600);
+        }
       } else {
         isLegalBall = true;
         newInnings.totalRuns += runs;
