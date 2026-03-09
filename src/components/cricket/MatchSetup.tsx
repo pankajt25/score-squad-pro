@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { getFormatRules } from "@/lib/cricketRules";
 
 interface MatchSetupProps {
   onSubmit: (teamA: string, teamB: string, venue: string, overs: number, matchMode: string) => void;
 }
 
 const MATCH_MODES = [
-  { id: "t10", label: "T10", overs: 10, icon: "⚡", desc: "10 overs per side", color: "from-purple-500/20 to-purple-600/10 border-purple-500/40" },
-  { id: "t20", label: "T20", overs: 20, icon: "🔥", desc: "20 overs per side", color: "from-orange-500/20 to-orange-600/10 border-orange-500/40" },
-  { id: "odi", label: "ODI", overs: 50, icon: "🏏", desc: "50 overs per side", color: "from-blue-500/20 to-blue-600/10 border-blue-500/40" },
-  { id: "test", label: "Test", overs: 90, icon: "🏛️", desc: "Unlimited overs (90/day)", color: "from-red-500/20 to-red-600/10 border-red-500/40" },
+  { id: "t10", label: "T10", overs: 10, icon: "⚡", desc: "10 overs · 6 players", color: "from-purple-500/20 to-purple-600/10 border-purple-500/40" },
+  { id: "t20", label: "T20", overs: 20, icon: "🔥", desc: "20 overs · 11 players", color: "from-orange-500/20 to-orange-600/10 border-orange-500/40" },
+  { id: "odi", label: "ODI", overs: 50, icon: "🏏", desc: "50 overs · 11 players", color: "from-blue-500/20 to-blue-600/10 border-blue-500/40" },
+  { id: "test", label: "Test", overs: 90, icon: "🏛️", desc: "4 innings · 11 players", color: "from-red-500/20 to-red-600/10 border-red-500/40" },
   { id: "custom", label: "Custom", overs: 0, icon: "⚙️", desc: "Set your own overs", color: "from-emerald-500/20 to-emerald-600/10 border-emerald-500/40" },
 ];
 
