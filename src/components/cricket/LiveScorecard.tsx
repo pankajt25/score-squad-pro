@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect, useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from "recharts";
 import { playBoundaryFourSound, playSixSound, playWicketSound } from "@/lib/soundEffects";
+import { getMaxOversPerBowler, isPowerplayOver, getFormatRules } from "@/lib/cricketRules";
 
 interface LiveScorecardProps {
   match: MatchData;
@@ -19,12 +20,15 @@ interface LiveScorecardProps {
   onStartSuperOverSecondInnings?: () => void;
   onRecordSuperOverBall?: (input: ScoreInput) => void;
   onUndoLastBall?: () => void;
+  onDeclareInnings?: () => void;
+  onEnforceFollowOn?: (enforce: boolean) => void;
+  onStartNextTestInnings?: () => void;
   lastEvent: string;
   animationType: "score" | "wicket" | null;
 }
 
 export default function LiveScorecard({
-  match, innings, onRecordBall, onSelectBowler, onSwapStrike, onChangeBatsman, onRetireBatsman, onUnretireBatsman, onStartSecondInnings, onResetMatch, onStartSuperOver, onStartSuperOverSecondInnings, onRecordSuperOverBall, onUndoLastBall, lastEvent, animationType,
+  match, innings, onRecordBall, onSelectBowler, onSwapStrike, onChangeBatsman, onRetireBatsman, onUnretireBatsman, onStartSecondInnings, onResetMatch, onStartSuperOver, onStartSuperOverSecondInnings, onRecordSuperOverBall, onUndoLastBall, onDeclareInnings, onEnforceFollowOn, onStartNextTestInnings, lastEvent, animationType,
 }: LiveScorecardProps) {
   const [showBowlerSelect, setShowBowlerSelect] = useState(false);
   const [showBatsmanSelect, setShowBatsmanSelect] = useState<"striker" | "nonStriker" | null>(null);
@@ -37,6 +41,10 @@ export default function LiveScorecard({
   const [showNoBallExtras, setShowNoBallExtras] = useState(false);
   const [showByeExtras, setShowByeExtras] = useState(false);
   const [showLegByeExtras, setShowLegByeExtras] = useState(false);
+
+  const rules = getFormatRules(match.matchMode);
+  const isTest = match.matchMode === "test";
+  const maxBowlerOvers = getMaxOversPerBowler(match.matchMode, match.oversLimit);
 
   useEffect(() => {
     if (innings.ballLog.length > 0) {
@@ -57,19 +65,15 @@ export default function LiveScorecard({
     }
   }, [innings.ballLog.length]);
 
-  // Scoring visualization data: runs per over
   const overData = useMemo(() => {
     const map: Record<number, { runs: number; wickets: number }> = {};
     innings.ballLog.forEach(b => {
-      const ov = b.isWide || b.isNoBall ? b.over : b.over + (b.ball === 0 && !b.isWide && !b.isNoBall ? 0 : 0);
-      // Group by the over the ball belongs to
       const overNum = b.ball === 0 && !b.isWide && !b.isNoBall ? b.over - 1 : b.over;
       const key = overNum < 0 ? 0 : overNum;
       if (!map[key]) map[key] = { runs: 0, wickets: 0 };
       map[key].runs += b.runs + (b.isWide ? 1 : 0) + (b.isNoBall ? 1 : 0);
       if (b.isWicket) map[key].wickets += 1;
     });
-    // Also count current over if there are balls
     if (innings.ballsInCurrentOver > 0 && !map[innings.totalOvers]) {
       map[innings.totalOvers] = { runs: 0, wickets: 0 };
     }
@@ -78,21 +82,32 @@ export default function LiveScorecard({
       .sort((a, b) => Number(a.over) - Number(b.over));
   }, [innings.ballLog, innings.totalOvers, innings.ballsInCurrentOver]);
 
-  // Run accumulation for worm
-  const wormData = useMemo(() => {
-    let total = 0;
-    const points: { ball: number; runs: number }[] = [{ ball: 0, runs: 0 }];
-    innings.ballLog.forEach((b, i) => {
-      total += b.runs + (b.isWide ? 1 : 0) + (b.isNoBall ? 1 : 0);
-      points.push({ ball: i + 1, runs: total });
-    });
-    return points;
-  }, [innings.ballLog]);
-
   const oversStr = getOversString(innings.totalOvers, innings.ballsInCurrentOver);
   const runRate = getRunRate(innings.totalRuns, innings.totalOvers, innings.ballsInCurrentOver);
-  const target = match.currentInnings === 1 && match.innings[0] ? match.innings[0].totalRuns + 1 : null;
-  const remaining = target ? target - innings.totalRuns : null;
+  
+  // Calculate target for chasing innings
+  let target: number | null = null;
+  let remaining: number | null = null;
+  
+  if (isTest) {
+    // In Test 4th innings, calculate target from all previous innings
+    if (match.currentInnings === 3) {
+      let battingTeamPrev = 0;
+      let bowlingTeamPrev = 0;
+      match.innings.forEach((inn, idx) => {
+        if (!inn || idx === match.currentInnings) return;
+        if (inn.battingTeam === innings.battingTeam) battingTeamPrev += inn.totalRuns;
+        else bowlingTeamPrev += inn.totalRuns;
+      });
+      target = bowlingTeamPrev - battingTeamPrev + 1;
+      remaining = target - innings.totalRuns;
+    }
+  } else {
+    if (match.currentInnings === 1 && match.innings[0]) {
+      target = match.innings[0].totalRuns + 1;
+      remaining = target - innings.totalRuns;
+    }
+  }
 
   const striker = innings.batsmen[innings.currentBatsmanIndex];
   const nonStriker = innings.batsmen[innings.nonStrikerIndex];
@@ -103,7 +118,39 @@ export default function LiveScorecard({
   const isSuperOver = match.matchStatus === "super_over";
   const isSuperOverInningsBreak = match.matchStatus === "innings_break" && !!match.superOver;
   const isCompleted = match.matchStatus === "completed";
+  const isFollowOnDecision = match.matchStatus === "follow_on_decision";
   const superOverRound = match.superOver?.round ?? 0;
+
+  // Powerplay indicator
+  const currentOverNumber = innings.totalOvers + (innings.ballsInCurrentOver > 0 ? 1 : 0);
+  const inPowerplay = isPowerplayOver(match.matchMode, innings.totalOvers);
+
+  // Innings label
+  const getInningsLabel = () => {
+    if (isSuperOver) return `⚡ Super Over${superOverRound > 1 ? ` #${superOverRound}` : ""}`;
+    if (isTest) {
+      const ordinals = ["1st", "2nd", "3rd", "4th"];
+      return `${ordinals[match.currentInnings]} Innings`;
+    }
+    return match.currentInnings === 0 ? "1st Innings" : "2nd Innings";
+  };
+
+  // Test match lead calculation
+  const getTestLead = () => {
+    if (!isTest) return null;
+    let battingTotal = 0;
+    let bowlingTotal = 0;
+    match.innings.forEach((inn, idx) => {
+      if (!inn) return;
+      if (idx === match.currentInnings) return;
+      if (inn.battingTeam === innings.battingTeam) battingTotal += inn.totalRuns;
+      else bowlingTotal += inn.totalRuns;
+    });
+    battingTotal += innings.totalRuns;
+    const lead = battingTotal - bowlingTotal;
+    return lead;
+  };
+  const testLead = getTestLead();
 
   const handleRuns = (runs: number) => {
     if (isSuperOver && onRecordSuperOverBall) onRecordSuperOverBall({ type: "runs", runs });
@@ -134,6 +181,13 @@ export default function LiveScorecard({
     setShowLegByeExtras(false);
   };
 
+  // Check if bowler has reached their limit
+  const isBowlerAtLimit = (bowlerIdx: number) => {
+    if (maxBowlerOvers === null) return false;
+    const b = innings.bowlers[bowlerIdx];
+    return b.overs >= maxBowlerOvers && b.ballsInCurrentOver === 0;
+  };
+
   return (
     <div id="scorecard-export" className="min-h-screen p-3 md:p-6 max-w-4xl mx-auto space-y-4 pt-4 bg-field stagger-in">
       {/* Ball Animation Overlay */}
@@ -156,13 +210,18 @@ export default function LiveScorecard({
             <p className="text-xs text-muted-foreground">vs {innings.bowlingTeam} · {match.venue}</p>
           </div>
           <div className="flex items-center gap-2">
+            {inPowerplay && (
+              <span className="text-[10px] px-2 py-1 rounded-md font-bold uppercase bg-accent/20 text-accent animate-pulse">
+                PP
+              </span>
+            )}
             {match.matchMode && match.matchMode !== "custom" && (
               <span className="text-[10px] px-2 py-1 rounded-md font-bold uppercase bg-muted/50 text-muted-foreground">
                 {match.matchMode === "t10" ? "T10" : match.matchMode === "t20" ? "T20" : match.matchMode === "odi" ? "ODI" : match.matchMode === "test" ? "TEST" : match.matchMode}
               </span>
             )}
             <div className={`text-xs px-3 py-1.5 rounded-lg font-bold ${isSuperOver ? "bg-accent/20 text-accent" : "bg-primary/15 text-primary"}`}>
-              {isSuperOver ? `⚡ Super Over${superOverRound > 1 ? ` #${superOverRound}` : ""}` : match.currentInnings === 0 ? "1st Innings" : "2nd Innings"}
+              {getInningsLabel()}
             </div>
           </div>
         </div>
@@ -172,15 +231,37 @@ export default function LiveScorecard({
             {innings.totalRuns}/{innings.totalWickets}
           </span>
           <span className="text-lg text-muted-foreground font-mono">({oversStr} ov)</span>
+          {innings.isDeclared && <span className="text-sm font-bold text-accent">dec</span>}
         </div>
 
         <div className="flex gap-4 mt-2 text-sm text-muted-foreground flex-wrap">
           <span>CRR: <span className="text-foreground font-mono">{runRate}</span></span>
-          {target && <span>Target: <span className="text-accent font-mono">{target}</span></span>}
-          {remaining && remaining > 0 && (
+          {target && target > 0 && <span>Target: <span className="text-accent font-mono">{target}</span></span>}
+          {remaining && remaining > 0 && !isTest && (
             <span>Need: <span className="text-accent font-mono">{remaining}</span> from <span className="font-mono">{(match.oversLimit * 6 - innings.totalOvers * 6 - innings.ballsInCurrentOver)}</span> balls</span>
           )}
+          {remaining && remaining > 0 && isTest && (
+            <span>Need: <span className="text-accent font-mono">{remaining}</span> to win</span>
+          )}
+          {isTest && testLead !== null && (
+            <span>{testLead >= 0 ? "Lead" : "Trail"}: <span className="text-foreground font-mono font-bold">{Math.abs(testLead)}</span></span>
+          )}
         </div>
+
+        {/* Test match: Previous innings scores */}
+        {isTest && match.innings.some((inn, idx) => inn && idx !== match.currentInnings) && (
+          <div className="mt-2 flex flex-wrap gap-2">
+            {match.innings.map((inn, idx) => {
+              if (!inn || idx === match.currentInnings) return null;
+              const ordinals = ["1st", "2nd", "3rd", "4th"];
+              return (
+                <span key={idx} className="text-xs bg-muted/30 text-muted-foreground px-2 py-1 rounded font-mono">
+                  {inn.battingTeam} {ordinals[idx]}: {inn.totalRuns}/{inn.totalWickets}{inn.isDeclared ? "d" : ""}
+                </span>
+              );
+            })}
+          </div>
+        )}
 
         {lastEvent && (
           <div className={`mt-2 text-sm font-medium px-3 py-1 rounded inline-block ${
@@ -195,7 +276,7 @@ export default function LiveScorecard({
       <div className="glass-card rounded-2xl overflow-hidden">
         <div className="px-4 py-2.5 border-b border-border/50 bg-muted/30 flex items-center justify-between">
           <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Batting</span>
-          {!isInningsBreak && !isCompleted && (
+          {!isInningsBreak && !isCompleted && !isFollowOnDecision && (
             <div className="flex gap-3">
               <button onClick={onSwapStrike} className="text-xs font-medium text-primary hover:text-primary/80 transition-colors active:scale-95">⇄ Swap</button>
               <button onClick={() => setShowBatsmanSelect(showBatsmanSelect ? null : "striker")} className="text-xs font-medium text-primary hover:text-primary/80 transition-colors active:scale-95">✎ Change</button>
@@ -234,8 +315,7 @@ export default function LiveScorecard({
             </Button>
           </div>
         )}
-        {/* Unretire: show retired hurt batsmen who can return */}
-        {innings.batsmen.some(b => b.isRetiredHurt) && !isInningsBreak && !isCompleted && (
+        {innings.batsmen.some(b => b.isRetiredHurt) && !isInningsBreak && !isCompleted && !isFollowOnDecision && (
           <div className="p-3 border-b border-border/50 bg-primary/5 space-y-2">
             <p className="text-xs font-bold text-primary">🏥 Retired Hurt — Tap to bring back:</p>
             <div className="flex flex-wrap gap-2">
@@ -294,16 +374,30 @@ export default function LiveScorecard({
       {/* Bowler */}
       <div className="glass-card rounded-2xl overflow-hidden">
         <div className="px-4 py-2.5 border-b border-border/50 bg-muted/30 flex items-center justify-between">
-          <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Bowling</span>
+          <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+            Bowling
+            {maxBowlerOvers !== null && (
+              <span className="ml-2 text-accent font-mono">max {maxBowlerOvers} ov/bowler</span>
+            )}
+          </span>
           <button onClick={() => setShowBowlerSelect(!showBowlerSelect)} className="text-xs font-medium text-primary hover:text-primary/80 transition-colors active:scale-95">✎ Change</button>
         </div>
         {showBowlerSelect && (
           <div className="p-3 border-b border-border/50 bg-muted/20 flex flex-wrap gap-2">
-            {innings.bowlers.map((b, i) => (
-              <Button key={i} size="sm" variant={i === innings.currentBowlerIndex ? "default" : "outline"} onClick={() => { onSelectBowler(i); setShowBowlerSelect(false); }} className="text-xs rounded-lg">
-                {b.name}
-              </Button>
-            ))}
+            {innings.bowlers.map((b, i) => {
+              const atLimit = isBowlerAtLimit(i);
+              return (
+                <Button key={i} size="sm"
+                  variant={i === innings.currentBowlerIndex ? "default" : "outline"}
+                  disabled={atLimit}
+                  onClick={() => { onSelectBowler(i); setShowBowlerSelect(false); }}
+                  className={`text-xs rounded-lg ${atLimit ? "opacity-50 line-through" : ""}`}
+                >
+                  {b.name} ({getBowlerOversString(b.overs, b.ballsInCurrentOver)})
+                  {atLimit && " ✓"}
+                </Button>
+              );
+            })}
           </div>
         )}
         <table className="w-full text-sm">
@@ -318,7 +412,14 @@ export default function LiveScorecard({
           </thead>
           <tbody>
             <tr>
-              <td className="p-2.5 pl-4 text-foreground font-semibold">{bowler.name}</td>
+              <td className="p-2.5 pl-4 text-foreground font-semibold">
+                {bowler.name}
+                {maxBowlerOvers !== null && (
+                  <span className={`ml-1 text-[10px] font-mono ${bowler.overs >= maxBowlerOvers ? "text-destructive" : "text-muted-foreground"}`}>
+                    ({bowler.overs}/{maxBowlerOvers})
+                  </span>
+                )}
+              </td>
               <td className="text-right p-2.5 font-mono text-muted-foreground">{getBowlerOversString(bowler.overs, bowler.ballsInCurrentOver)}</td>
               <td className="text-right p-2.5 font-mono text-foreground">{bowler.runsConceded}</td>
               <td className="text-right p-2.5 font-mono font-bold text-primary text-base">{bowler.wickets}</td>
@@ -329,15 +430,23 @@ export default function LiveScorecard({
       </div>
 
       {/* Scoring Controls */}
-      {!isInningsBreak && !isSuperOverBreak && !isSuperOverInningsBreak && !isCompleted && (match.matchStatus === "live" || isSuperOver) && (
+      {!isInningsBreak && !isSuperOverBreak && !isSuperOverInningsBreak && !isCompleted && !isFollowOnDecision && (match.matchStatus === "live" || isSuperOver) && (
         <div className="glass-card rounded-2xl p-5 space-y-4">
           <div className="flex items-center justify-between">
             <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Score</p>
-            {onUndoLastBall && innings.ballLog.length > 0 && (
-              <button onClick={onUndoLastBall} className="text-xs font-medium text-accent hover:text-accent/80 transition-colors active:scale-95 flex items-center gap-1">
-                ↩ Undo
-              </button>
-            )}
+            <div className="flex gap-3">
+              {/* Declare button for Test matches */}
+              {isTest && onDeclareInnings && match.matchStatus === "live" && (
+                <button onClick={onDeclareInnings} className="text-xs font-medium text-accent hover:text-accent/80 transition-colors active:scale-95 flex items-center gap-1">
+                  📋 Declare
+                </button>
+              )}
+              {onUndoLastBall && innings.ballLog.length > 0 && (
+                <button onClick={onUndoLastBall} className="text-xs font-medium text-accent hover:text-accent/80 transition-colors active:scale-95 flex items-center gap-1">
+                  ↩ Undo
+                </button>
+              )}
+            </div>
           </div>
           <div className="grid grid-cols-7 gap-2">
             {[0, 1, 2, 3, 4, 5, 6].map(r => (
@@ -415,21 +524,63 @@ export default function LiveScorecard({
         </div>
       )}
 
+      {/* Follow-on Decision (Test match) */}
+      {isFollowOnDecision && onEnforceFollowOn && (
+        <div className="glass-card rounded-2xl p-8 text-center space-y-4 bounce-in glow-gold">
+          <div className="text-5xl">📋</div>
+          <h3 className="text-2xl font-extrabold text-foreground">Follow-on Option</h3>
+          <p className="text-muted-foreground">
+            {match.innings[0]?.battingTeam} scored <span className="text-primary font-mono font-bold">{match.innings[0]?.totalRuns}</span>,
+            {" "}{match.innings[1]?.battingTeam} scored <span className="text-primary font-mono font-bold">{match.innings[1]?.totalRuns}</span>
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Deficit: <span className="text-accent font-bold">{(match.innings[0]?.totalRuns ?? 0) - (match.innings[1]?.totalRuns ?? 0)} runs</span> (Follow-on threshold: {getFormatRules(match.matchMode).followOnMargin} runs)
+          </p>
+          <div className="flex gap-3 justify-center">
+            <Button onClick={() => onEnforceFollowOn(true)} className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold h-12 rounded-xl">
+              Enforce Follow-on
+            </Button>
+            <Button onClick={() => onEnforceFollowOn(false)} variant="outline" className="font-bold h-12 rounded-xl">
+              Bat Again (Normal)
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Innings Break */}
       {isInningsBreak && (
         <div className="glass-card rounded-2xl p-8 text-center space-y-4 bounce-in">
           <h3 className="text-2xl font-extrabold text-foreground">Innings Break</h3>
-          <p className="text-muted-foreground">
-            {match.innings[0]?.battingTeam} scored <span className="text-primary font-mono font-bold text-lg">{match.innings[0]?.totalRuns}/{match.innings[0]?.totalWickets}</span>
-          </p>
-          <p className="text-accent font-bold text-xl">Target: {(match.innings[0]?.totalRuns ?? 0) + 1}</p>
-          <Button onClick={onStartSecondInnings} className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold h-12 rounded-xl shadow-lg shadow-primary/20">
-            Start 2nd Innings →
-          </Button>
+          {isTest ? (
+            <>
+              <p className="text-muted-foreground">
+                {innings.battingTeam} scored <span className="text-primary font-mono font-bold text-lg">{innings.totalRuns}/{innings.totalWickets}</span>
+                {innings.isDeclared && <span className="text-accent ml-1">(declared)</span>}
+              </p>
+              {match.currentInnings < 3 && onStartNextTestInnings && (
+                <Button onClick={match.currentInnings === 0 ? onStartSecondInnings : onStartNextTestInnings} className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold h-12 rounded-xl shadow-lg shadow-primary/20">
+                  Start {["2nd", "3rd", "4th"][match.currentInnings]} Innings →
+                </Button>
+              )}
+              {match.currentInnings === 3 && (
+                <p className="text-accent font-bold">Match Complete</p>
+              )}
+            </>
+          ) : (
+            <>
+              <p className="text-muted-foreground">
+                {match.innings[0]?.battingTeam} scored <span className="text-primary font-mono font-bold text-lg">{match.innings[0]?.totalRuns}/{match.innings[0]?.totalWickets}</span>
+              </p>
+              <p className="text-accent font-bold text-xl">Target: {(match.innings[0]?.totalRuns ?? 0) + 1}</p>
+              <Button onClick={onStartSecondInnings} className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold h-12 rounded-xl shadow-lg shadow-primary/20">
+                Start 2nd Innings →
+              </Button>
+            </>
+          )}
         </div>
       )}
 
-      {/* Super Over Break (after tie) */}
+      {/* Super Over Break */}
       {isSuperOverBreak && (
         <div className="glass-card rounded-2xl p-8 text-center space-y-4 bounce-in glow-gold">
           <div className="text-5xl">⚡</div>
@@ -471,7 +622,7 @@ export default function LiveScorecard({
         <div className="glass-card rounded-2xl p-8 text-center space-y-4 glow-green bounce-in">
           <div className="text-6xl" style={{ animation: 'float 3s ease-in-out infinite' }}>🏆</div>
           <h3 className="text-2xl font-extrabold text-foreground">
-            {match.winner === "Tie" ? "Match Tied!" : `${match.winner} Won!`}
+            {match.winner ? `${match.winner} Won!` : isTest ? "Match Drawn!" : "Match Tied!"}
           </h3>
           {match.winMargin && <p className="text-primary font-bold text-lg">{match.winMargin.startsWith("Super Over") ? `via ${match.winMargin} ⚡` : `by ${match.winMargin}`}</p>}
           <div className="flex gap-3 justify-center mt-4">
@@ -495,12 +646,13 @@ export default function LiveScorecard({
                     ${isLast ? "ball-pop" : ""}
                     ${b.isWicket ? "bg-destructive/20 border-destructive text-destructive" :
                       b.isWide || b.isNoBall ? "bg-accent/20 border-accent text-accent" :
+                      b.isBye || b.isLegBye ? "bg-muted border-primary/30 text-primary" :
                       b.runs === 4 ? "bg-cricket-blue/20 border-cricket-blue text-cricket-blue" :
                       b.runs === 6 ? "bg-cricket-purple/20 border-cricket-purple text-cricket-purple" :
                       b.runs === 0 ? "bg-muted border-border text-muted-foreground" :
                       "bg-primary/10 border-primary/30 text-primary"
                     }`}>
-                    {b.isWicket ? "W" : b.isWide ? "Wd" : b.isNoBall ? "NB" : b.runs}
+                    {b.isWicket ? "W" : b.isWide ? "Wd" : b.isNoBall ? "NB" : b.isBye ? `B${b.runs}` : b.isLegBye ? `LB${b.runs}` : b.runs}
                   </span>
                 );
               })}
@@ -520,7 +672,6 @@ export default function LiveScorecard({
           </button>
           {showViz && (
             <div className="p-4 space-y-4 fade-in">
-              {/* Runs Per Over Bar Chart */}
               <div>
                 <p className="text-xs text-muted-foreground mb-2 font-medium">Runs Per Over</p>
                 <div className="h-40">
@@ -552,8 +703,7 @@ export default function LiveScorecard({
                 </div>
               </div>
 
-              {/* Run Rate Summary */}
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-4 gap-3">
                 <div className="text-center p-3 rounded-xl bg-muted/30">
                   <p className="text-2xl font-mono font-bold text-foreground">{innings.extras.total}</p>
                   <p className="text-xs text-muted-foreground">Extras</p>
@@ -565,6 +715,10 @@ export default function LiveScorecard({
                 <div className="text-center p-3 rounded-xl bg-muted/30">
                   <p className="text-2xl font-mono font-bold text-cricket-purple">{innings.batsmen.reduce((a, b) => a + b.sixes, 0)}</p>
                   <p className="text-xs text-muted-foreground">Sixes</p>
+                </div>
+                <div className="text-center p-3 rounded-xl bg-muted/30">
+                  <p className="text-2xl font-mono font-bold text-foreground">{runRate}</p>
+                  <p className="text-xs text-muted-foreground">RR</p>
                 </div>
               </div>
             </div>
@@ -620,7 +774,7 @@ export default function LiveScorecard({
           </table>
         </div>
         <div className="px-4 py-2.5 border-t border-border/50 text-xs text-muted-foreground font-medium">
-          Extras: <span className="text-foreground font-mono">{innings.extras.total}</span> (wd {innings.extras.wides}, nb {innings.extras.noBalls})
+          Extras: <span className="text-foreground font-mono">{innings.extras.total}</span> (wd {innings.extras.wides}, nb {innings.extras.noBalls}, b {innings.extras.byes}, lb {innings.extras.legByes})
         </div>
       </div>
 
@@ -645,7 +799,10 @@ export default function LiveScorecard({
             <tbody>
               {innings.bowlers.filter(b => b.overs > 0 || b.ballsInCurrentOver > 0).map((b, i) => (
                 <tr key={i} className="border-b border-border/20 hover:bg-muted/20 transition-colors">
-                  <td className="p-2.5 pl-4 text-foreground font-medium">{b.name} {b.isBowling && <span className="text-primary">●</span>}</td>
+                  <td className="p-2.5 pl-4 text-foreground font-medium">
+                    {b.name} {b.isBowling && <span className="text-primary">●</span>}
+                    {maxBowlerOvers !== null && b.overs >= maxBowlerOvers && <span className="text-[10px] text-destructive ml-1">✓</span>}
+                  </td>
                   <td className="text-right p-2.5 font-mono text-muted-foreground">{getBowlerOversString(b.overs, b.ballsInCurrentOver)}</td>
                   <td className="text-right p-2.5 font-mono text-foreground">{b.runsConceded}</td>
                   <td className="text-right p-2.5 font-mono font-bold text-primary">{b.wickets}</td>
@@ -686,6 +843,7 @@ export default function LiveScorecard({
                           b.runs === 6 ? "text-cricket-purple" :
                           b.runs === 4 ? "text-cricket-blue" :
                           b.isWide || b.isNoBall ? "text-accent" :
+                          b.isBye || b.isLegBye ? "text-primary" :
                           "text-foreground"
                         }`}>
                           {b.description}
