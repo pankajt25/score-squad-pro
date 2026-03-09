@@ -18,17 +18,16 @@ const Index = () => {
     retireBatsman, unretireBatsman, resetMatch,
     startSuperOver, startSuperOverSecondInnings, recordSuperOverBall,
     undoLastBall, goBack,
+    declareInnings, enforceFollowOn, startNextTestInnings,
   } = useCricketMatch();
 
   const [showHistory, setShowHistory] = useState(false);
   const [history, setHistory] = useState<MatchData[]>([]);
 
-  // Load history
   useEffect(() => {
     setHistory(getMatchHistory());
   }, [showHistory]);
 
-  // Save completed match to history
   useEffect(() => {
     if (match?.matchStatus === "completed") {
       saveToHistory(match);
@@ -45,9 +44,7 @@ const Index = () => {
     setHistory([]);
   };
 
-  // Dark mode is handled by the TopBar's useDarkMode hook — 
-  // we still need to init it, so TopBar is always rendered
-  const showExport = !!(match && (match.matchStatus === "live" || match.matchStatus === "innings_break" || match.matchStatus === "completed" || match.matchStatus === "super_over_break" || match.matchStatus === "super_over"));
+  const showExport = !!(match && (match.matchStatus === "live" || match.matchStatus === "innings_break" || match.matchStatus === "completed" || match.matchStatus === "super_over_break" || match.matchStatus === "super_over" || match.matchStatus === "follow_on_decision"));
 
   if (showHistory) {
     return (
@@ -58,7 +55,6 @@ const Index = () => {
     );
   }
 
-  // No match yet
   if (!match || match.matchStatus === "setup") {
     return (
       <>
@@ -72,7 +68,7 @@ const Index = () => {
     return (
       <>
         <TopBar onShowHistory={() => setShowHistory(true)} showExport={false} onBack={goBack} />
-        <PlayerEntry teamA={match.teamA} teamB={match.teamB} onSubmit={setPlayers} />
+        <PlayerEntry teamA={match.teamA} teamB={match.teamB} matchMode={match.matchMode} onSubmit={setPlayers} />
       </>
     );
   }
@@ -105,6 +101,9 @@ const Index = () => {
           onStartSuperOverSecondInnings={startSuperOverSecondInnings}
           onRecordSuperOverBall={recordSuperOverBall}
           onUndoLastBall={undoLastBall}
+          onDeclareInnings={declareInnings}
+          onEnforceFollowOn={enforceFollowOn}
+          onStartNextTestInnings={startNextTestInnings}
           lastEvent={lastEvent}
           animationType={animationType}
         />
