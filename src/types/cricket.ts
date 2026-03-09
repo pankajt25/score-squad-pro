@@ -8,12 +8,12 @@ export interface BatsmanStats {
   isRetiredHurt: boolean;
   dismissal: string;
   isOnStrike: boolean;
-  isAtCrease: boolean; // currently batting
+  isAtCrease: boolean;
 }
 
 export interface BowlerStats {
   name: string;
-  overs: number; // completed overs
+  overs: number;
   ballsInCurrentOver: number;
   runsConceded: number;
   wickets: number;
@@ -41,10 +41,11 @@ export interface InningsData {
   batsmen: BatsmanStats[];
   bowlers: BowlerStats[];
   fallOfWickets: FallOfWicket[];
-  currentBatsmanIndex: number; // striker
+  currentBatsmanIndex: number;
   nonStrikerIndex: number;
   currentBowlerIndex: number;
   isCompleted: boolean;
+  isDeclared: boolean;
   ballLog: BallEvent[];
 }
 
@@ -55,6 +56,8 @@ export interface BallEvent {
   isWide: boolean;
   isNoBall: boolean;
   isWicket: boolean;
+  isBye: boolean;
+  isLegBye: boolean;
   batsmanName: string;
   bowlerName: string;
   description: string;
@@ -67,14 +70,15 @@ export interface MatchData {
   teamB: string;
   venue: string;
   oversLimit: number;
-  matchMode: string; // "t10" | "t20" | "odi" | "test" | "custom"
+  matchMode: string;
   teamAPlayers: string[];
   teamBPlayers: string[];
   tossWinner: string;
   tossDecision: "bat" | "bowl";
-  innings: [InningsData | null, InningsData | null];
-  currentInnings: 0 | 1;
-  matchStatus: "setup" | "players" | "toss" | "live" | "innings_break" | "completed" | "super_over_break" | "super_over";
+  // Support up to 4 innings (Test match)
+  innings: (InningsData | null)[];
+  currentInnings: number;
+  matchStatus: "setup" | "players" | "toss" | "live" | "innings_break" | "completed" | "super_over_break" | "super_over" | "follow_on_decision";
   winner: string | null;
   winMargin: string | null;
   createdAt: string;
@@ -84,6 +88,8 @@ export interface MatchData {
     round: number;
   };
   originalOversLimit?: number;
+  followOnEnforced?: boolean;
+  totalInningsCount: number; // 2 or 4
 }
 
 export type ScoreInput = {
@@ -159,6 +165,7 @@ export function createEmptyInnings(
     nonStrikerIndex: 1,
     currentBowlerIndex: 0,
     isCompleted: false,
+    isDeclared: false,
     ballLog: [],
   };
 }
