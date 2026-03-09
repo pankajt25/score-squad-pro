@@ -1,16 +1,21 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { getFormatRules } from "@/lib/cricketRules";
 
 interface PlayerEntryProps {
   teamA: string;
   teamB: string;
+  matchMode: string;
   onSubmit: (teamAPlayers: string[], teamBPlayers: string[]) => void;
 }
 
-export default function PlayerEntry({ teamA, teamB, onSubmit }: PlayerEntryProps) {
-  const [teamAPlayers, setTeamAPlayers] = useState<string[]>(Array(11).fill(""));
-  const [teamBPlayers, setTeamBPlayers] = useState<string[]>(Array(11).fill(""));
+export default function PlayerEntry({ teamA, teamB, matchMode, onSubmit }: PlayerEntryProps) {
+  const rules = getFormatRules(matchMode);
+  const playerCount = rules.playersPerTeam;
+
+  const [teamAPlayers, setTeamAPlayers] = useState<string[]>(Array(playerCount).fill(""));
+  const [teamBPlayers, setTeamBPlayers] = useState<string[]>(Array(playerCount).fill(""));
   const [activeTeam, setActiveTeam] = useState<"A" | "B">("A");
 
   const updatePlayer = (team: "A" | "B", index: number, value: string) => {
@@ -40,7 +45,9 @@ export default function PlayerEntry({ teamA, teamB, onSubmit }: PlayerEntryProps
       <div className="w-full max-w-md slide-up">
         <div className="text-center mb-6">
           <h2 className="text-2xl font-extrabold text-foreground tracking-tight">Squad Selection</h2>
-          <p className="text-muted-foreground text-sm mt-1">Enter player names — empty slots get defaults</p>
+          <p className="text-muted-foreground text-sm mt-1">
+            {rules.label} format — {playerCount} players per side
+          </p>
         </div>
 
         {/* Team tabs */}
@@ -70,7 +77,7 @@ export default function PlayerEntry({ teamA, teamB, onSubmit }: PlayerEntryProps
         <div className="glass-card rounded-2xl p-4 space-y-2 max-h-[55vh] overflow-y-auto">
           <div className="flex items-center justify-between mb-2">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{currentTeam}</p>
-            <span className="text-xs font-mono text-primary font-bold">{filledCount}/11</span>
+            <span className="text-xs font-mono text-primary font-bold">{filledCount}/{playerCount}</span>
           </div>
           <div className="stagger-in space-y-1.5">
             {currentPlayers.map((player, i) => (
