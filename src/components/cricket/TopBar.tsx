@@ -5,11 +5,13 @@ export default function TopBar({
   onExportPDF,
   showExport,
   onBack,
+  onShowStats,
 }: {
   onShowHistory: () => void;
   onExportPDF?: () => void;
   showExport: boolean;
   onBack?: () => void;
+  onShowStats?: () => void;
 }) {
   const { isDark, toggle } = useDarkMode();
 
@@ -39,6 +41,15 @@ export default function TopBar({
               title="Export PDF"
             >
               📄 PDF
+            </button>
+          )}
+          {onShowStats && (
+            <button
+              onClick={onShowStats}
+              className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted/80 transition-all duration-200 active:scale-95"
+              title="Player Stats"
+            >
+              📊 Stats
             </button>
           )}
           <button
