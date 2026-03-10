@@ -863,6 +863,55 @@ export default function LiveScorecard({
         </div>
       )}
 
+      {/* DLS Calculator (limited-overs 2nd innings only) */}
+      {!isTest && match.currentInnings === 1 && match.innings[0] && !isCompleted && (
+        <div className="glass-card rounded-2xl overflow-hidden">
+          <button
+            onClick={() => setShowDLS(!showDLS)}
+            className="w-full px-4 py-2.5 border-b border-border/50 bg-muted/30 flex items-center justify-between"
+          >
+            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">🌧️ DLS Calculator</span>
+            <span className="text-xs text-muted-foreground">{showDLS ? "▲" : "▼"}</span>
+          </button>
+          {showDLS && (
+            <div className="p-4 space-y-3 fade-in">
+              <p className="text-xs text-muted-foreground">If rain interrupts, enter revised overs for chasing team:</p>
+              <div className="flex gap-2 items-center">
+                <input
+                  type="number"
+                  min="1"
+                  max={match.oversLimit}
+                  value={dlsOvers}
+                  onChange={e => setDlsOvers(e.target.value)}
+                  placeholder={`Max ${match.oversLimit}`}
+                  className="bg-muted/50 border border-border/50 h-10 rounded-xl text-center font-mono text-sm px-3 w-32 text-foreground"
+                />
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    const overs = parseInt(dlsOvers);
+                    if (overs > 0 && overs <= match.oversLimit && match.innings[0]) {
+                      const result = calculateReducedOversTarget(match.innings[0].totalRuns, match.oversLimit, overs);
+                      setDlsResult(result);
+                    }
+                  }}
+                  className="rounded-xl text-xs font-bold"
+                >
+                  Calculate
+                </Button>
+              </div>
+              {dlsResult && (
+                <div className="bg-accent/10 border border-accent/20 rounded-xl p-3 space-y-1">
+                  <p className="text-sm font-bold text-accent">Revised Target: <span className="text-lg font-mono">{dlsResult.revisedTarget}</span></p>
+                  <p className="text-xs text-muted-foreground">Par Score: <span className="font-mono text-foreground">{dlsResult.parScore}</span></p>
+                  <p className="text-xs text-muted-foreground">{dlsResult.description}</p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Reset */}
       <div className="text-center pt-4 pb-10">
         <button onClick={onResetMatch} className="text-xs font-medium text-muted-foreground hover:text-destructive transition-all duration-200 px-4 py-2 rounded-lg hover:bg-destructive/10">
