@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from "recharts";
 import { playBoundaryFourSound, playSixSound, playWicketSound } from "@/lib/soundEffects";
 import { getMaxOversPerBowler, isPowerplayOver, getFormatRules } from "@/lib/cricketRules";
+import { calculateReducedOversTarget, DLSResult } from "@/lib/dlsMethod";
 
 interface LiveScorecardProps {
   match: MatchData;
