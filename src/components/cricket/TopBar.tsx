@@ -5,11 +5,13 @@ export default function TopBar({
   onExportPDF,
   showExport,
   onBack,
+  onShowStats,
 }: {
   onShowHistory: () => void;
   onExportPDF?: () => void;
   showExport: boolean;
   onBack?: () => void;
+  onShowStats?: () => void;
 }) {
   const { isDark, toggle } = useDarkMode();
 
