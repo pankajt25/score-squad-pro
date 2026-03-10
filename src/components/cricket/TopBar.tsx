@@ -43,6 +43,15 @@ export default function TopBar({
               📄 PDF
             </button>
           )}
+          {onShowStats && (
+            <button
+              onClick={onShowStats}
+              className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted/80 transition-all duration-200 active:scale-95"
+              title="Player Stats"
+            >
+              📊 Stats
+            </button>
+          )}
           <button
             onClick={onShowHistory}
             className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted/80 transition-all duration-200 active:scale-95"
