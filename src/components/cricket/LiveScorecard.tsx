@@ -42,6 +42,9 @@ export default function LiveScorecard({
   const [showNoBallExtras, setShowNoBallExtras] = useState(false);
   const [showByeExtras, setShowByeExtras] = useState(false);
   const [showLegByeExtras, setShowLegByeExtras] = useState(false);
+  const [showDLS, setShowDLS] = useState(false);
+  const [dlsOvers, setDlsOvers] = useState("");
+  const [dlsResult, setDlsResult] = useState<DLSResult | null>(null);
 
   const rules = getFormatRules(match.matchMode);
   const isTest = match.matchMode === "test";
