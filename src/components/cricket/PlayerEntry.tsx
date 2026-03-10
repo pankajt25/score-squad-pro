@@ -30,9 +30,14 @@ export default function PlayerEntry({ teamA, teamB, matchMode, onSubmit }: Playe
     }
   };
 
+  const allTeamAFilled = teamAPlayers.every(p => p.trim().length > 0);
+  const allTeamBFilled = teamBPlayers.every(p => p.trim().length > 0);
+  const canSubmit = allTeamAFilled && allTeamBFilled;
+
   const handleSubmit = () => {
-    const a = teamAPlayers.map((p, i) => p.trim() || `${teamA} Player ${i + 1}`);
-    const b = teamBPlayers.map((p, i) => p.trim() || `${teamB} Player ${i + 1}`);
+    if (!canSubmit) return;
+    const a = teamAPlayers.map(p => p.trim());
+    const b = teamBPlayers.map(p => p.trim());
     onSubmit(a, b);
   };
 
