@@ -16,28 +16,28 @@ export default function TopBar({
   const { isDark, toggle } = useDarkMode();
 
   return (
-    <header className="sticky top-0 z-50 bg-card/60 backdrop-blur-xl border-b border-border/50">
+    <header className="sticky top-0 z-50 bg-card/90 border-b-2 border-primary/30">
       <div className="max-w-4xl mx-auto flex items-center justify-between px-4 py-3">
         <div className="flex items-center gap-2.5">
           {onBack && (
             <button
               onClick={onBack}
-              className="w-8 h-8 flex items-center justify-center text-sm text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted/80 transition-all duration-200 active:scale-95"
+              className="w-8 h-8 flex items-center justify-center text-sm text-muted-foreground hover:text-primary rounded-sm hover:bg-primary/10 transition-all duration-200 active:scale-95 font-heading"
               title="Go back"
             >
               ←
             </button>
           )}
-          <div className="w-8 h-8 rounded-lg bg-primary/15 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-sm bg-primary/15 flex items-center justify-center border border-primary/20">
             <span className="text-lg">🏏</span>
           </div>
-          <span className="font-bold text-foreground tracking-tight">Cricket Scorer</span>
+          <span className="font-heading font-bold text-foreground tracking-widest text-sm uppercase">Cricket Scorer</span>
         </div>
         <div className="flex items-center gap-1">
           {showExport && onExportPDF && (
             <button
               onClick={onExportPDF}
-              className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted/80 transition-all duration-200 active:scale-95"
+              className="px-3 py-1.5 text-xs font-heading font-medium text-muted-foreground hover:text-primary rounded-sm hover:bg-primary/10 transition-all duration-200 active:scale-95 uppercase tracking-wider"
               title="Export PDF"
             >
               📄 PDF
@@ -46,22 +46,22 @@ export default function TopBar({
           {onShowStats && (
             <button
               onClick={onShowStats}
-              className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted/80 transition-all duration-200 active:scale-95"
+              className="px-3 py-1.5 text-xs font-heading font-medium text-muted-foreground hover:text-primary rounded-sm hover:bg-primary/10 transition-all duration-200 active:scale-95 uppercase tracking-wider"
               title="Player Stats"
             >
-              📊 Stats
+              📊 Records
             </button>
           )}
           <button
             onClick={onShowHistory}
-            className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted/80 transition-all duration-200 active:scale-95"
+            className="px-3 py-1.5 text-xs font-heading font-medium text-muted-foreground hover:text-primary rounded-sm hover:bg-primary/10 transition-all duration-200 active:scale-95 uppercase tracking-wider"
             title="Match History"
           >
-            📋 History
+            📜 Chronicle
           </button>
           <button
             onClick={toggle}
-            className="w-8 h-8 flex items-center justify-center text-sm text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted/80 transition-all duration-200 active:scale-95"
+            className="w-8 h-8 flex items-center justify-center text-sm text-muted-foreground hover:text-primary rounded-sm hover:bg-primary/10 transition-all duration-200 active:scale-95"
             title="Toggle theme"
           >
             {isDark ? "☀️" : "🌙"}
