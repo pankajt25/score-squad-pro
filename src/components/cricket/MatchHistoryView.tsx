@@ -9,26 +9,27 @@ interface MatchHistoryProps {
 
 export default function MatchHistory({ history, onBack, onClearHistory }: MatchHistoryProps) {
   return (
-    <div className="min-h-screen p-4 md:p-6 max-w-2xl mx-auto">
+    <div className="min-h-screen p-4 md:p-6 max-w-2xl mx-auto bg-field">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-foreground">Match History</h2>
-          <p className="text-sm text-muted-foreground">{history.length} match{history.length !== 1 ? "es" : ""}</p>
+          <h2 className="text-2xl font-heading font-bold text-foreground tracking-widest uppercase">Chronicle</h2>
+          <div className="ornate-divider w-24 mt-1" />
+          <p className="text-sm text-muted-foreground italic mt-1">{history.length} tale{history.length !== 1 ? "s" : ""} recorded</p>
         </div>
         <div className="flex gap-2">
           {history.length > 0 && (
-            <Button variant="ghost" size="sm" onClick={onClearHistory} className="text-xs text-muted-foreground hover:text-destructive">
-              Clear All
+            <Button variant="ghost" size="sm" onClick={onClearHistory} className="text-xs text-muted-foreground hover:text-destructive font-heading tracking-wider uppercase">
+              Erase All
             </Button>
           )}
-          <Button variant="outline" size="sm" onClick={onBack}>← Back</Button>
+          <Button variant="outline" size="sm" onClick={onBack} className="font-heading tracking-wider uppercase text-xs rounded-sm">← Back</Button>
         </div>
       </div>
 
       {history.length === 0 ? (
-        <div className="bg-card rounded-lg border border-border p-10 text-center">
-          <div className="text-4xl mb-3">📋</div>
-          <p className="text-muted-foreground">No completed matches yet</p>
+        <div className="parchment-card rounded-lg p-10 text-center">
+          <div className="text-4xl mb-3">📜</div>
+          <p className="text-muted-foreground italic font-medieval text-lg">No tales have been written yet</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -36,15 +37,15 @@ export default function MatchHistory({ history, onBack, onClearHistory }: MatchH
             const first = m.innings[0];
             const second = m.innings[1];
             return (
-              <div key={m.id} className="bg-card rounded-lg border border-border p-4 slide-up hover:border-primary/30 transition-colors">
+              <div key={m.id} className="parchment-card rounded-lg p-4 slide-up hover:border-primary/50 transition-colors">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-muted-foreground">{new Date(m.createdAt).toLocaleDateString()} · {m.venue}</span>
-                  <span className="text-xs text-muted-foreground">{m.oversLimit} overs</span>
+                  <span className="text-xs text-muted-foreground italic">{new Date(m.createdAt).toLocaleDateString()} · {m.venue}</span>
+                  <span className="text-xs text-muted-foreground font-mono">{m.oversLimit} overs</span>
                 </div>
 
                 <div className="space-y-1">
                   <div className="flex items-center justify-between">
-                    <span className={`font-medium text-foreground ${m.winner === first?.battingTeam ? "text-primary" : ""}`}>
+                    <span className={`font-heading font-medium text-foreground tracking-wider ${m.winner === first?.battingTeam ? "text-primary" : ""}`}>
                       {first?.battingTeam || m.teamA}
                     </span>
                     <span className="font-mono font-bold text-foreground">
@@ -55,7 +56,7 @@ export default function MatchHistory({ history, onBack, onClearHistory }: MatchH
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className={`font-medium text-foreground ${m.winner === second?.battingTeam ? "text-primary" : ""}`}>
+                    <span className={`font-heading font-medium text-foreground tracking-wider ${m.winner === second?.battingTeam ? "text-primary" : ""}`}>
                       {second?.battingTeam || m.teamB}
                     </span>
                     <span className="font-mono font-bold text-foreground">
@@ -68,8 +69,8 @@ export default function MatchHistory({ history, onBack, onClearHistory }: MatchH
                 </div>
 
                 {m.winner && (
-                  <div className="mt-2 text-xs font-medium text-primary">
-                    🏆 {m.winner === "Tie" ? "Match Tied" : `${m.winner} won by ${m.winMargin}`}
+                  <div className="mt-2 text-xs font-heading font-medium text-primary tracking-wider">
+                    🏆 {m.winner === "Tie" ? "A Drawn Battle" : `${m.winner} triumphed by ${m.winMargin}`}
                   </div>
                 )}
               </div>

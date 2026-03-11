@@ -2,78 +2,80 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&family=MedievalSharp&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
-    --background: 220 20% 8%;
-    --foreground: 210 20% 94%;
-    --card: 220 18% 12%;
-    --card-foreground: 210 20% 94%;
-    --popover: 220 18% 12%;
-    --popover-foreground: 210 20% 94%;
-    --primary: 152 60% 45%;
-    --primary-foreground: 220 20% 6%;
-    --secondary: 220 16% 18%;
-    --secondary-foreground: 210 20% 85%;
-    --muted: 220 14% 16%;
-    --muted-foreground: 215 12% 55%;
-    --accent: 38 90% 55%;
-    --accent-foreground: 220 20% 6%;
-    --destructive: 0 72% 55%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 220 14% 20%;
-    --input: 220 14% 20%;
-    --ring: 152 60% 45%;
-    --radius: 0.875rem;
-    --cricket-green: 152 60% 45%;
-    --cricket-green-glow: 152 70% 55%;
-    --cricket-pitch: 120 30% 20%;
-    --cricket-gold: 38 90% 55%;
-    --cricket-red: 0 72% 55%;
-    --cricket-blue: 210 70% 55%;
-    --cricket-purple: 270 50% 55%;
-    --score-bg: 220 22% 10%;
-    --score-highlight: 152 60% 45%;
-    --sidebar-background: 220 20% 8%;
-    --sidebar-foreground: 210 20% 94%;
-    --sidebar-primary: 152 60% 45%;
-    --sidebar-primary-foreground: 220 20% 6%;
-    --sidebar-accent: 220 16% 18%;
-    --sidebar-accent-foreground: 210 20% 85%;
-    --sidebar-border: 220 14% 20%;
-    --sidebar-ring: 152 60% 45%;
+    --background: 35 30% 12%;
+    --foreground: 35 25% 88%;
+    --card: 33 28% 16%;
+    --card-foreground: 35 25% 88%;
+    --popover: 33 28% 16%;
+    --popover-foreground: 35 25% 88%;
+    --primary: 38 65% 55%;
+    --primary-foreground: 35 30% 8%;
+    --secondary: 33 22% 22%;
+    --secondary-foreground: 35 20% 78%;
+    --muted: 33 18% 20%;
+    --muted-foreground: 35 15% 55%;
+    --accent: 15 70% 50%;
+    --accent-foreground: 35 30% 95%;
+    --destructive: 0 60% 45%;
+    --destructive-foreground: 35 30% 95%;
+    --border: 33 20% 25%;
+    --input: 33 20% 25%;
+    --ring: 38 65% 55%;
+    --radius: 0.5rem;
+    --cricket-green: 38 65% 55%;
+    --cricket-green-glow: 38 70% 65%;
+    --cricket-pitch: 33 25% 18%;
+    --cricket-gold: 43 80% 55%;
+    --cricket-red: 0 60% 45%;
+    --cricket-blue: 210 40% 50%;
+    --cricket-purple: 280 35% 50%;
+    --score-bg: 33 28% 14%;
+    --score-highlight: 38 65% 55%;
+    --sidebar-background: 35 30% 12%;
+    --sidebar-foreground: 35 25% 88%;
+    --sidebar-primary: 38 65% 55%;
+    --sidebar-primary-foreground: 35 30% 8%;
+    --sidebar-accent: 33 22% 22%;
+    --sidebar-accent-foreground: 35 20% 78%;
+    --sidebar-border: 33 20% 25%;
+    --sidebar-ring: 38 65% 55%;
+
+    --parchment-texture: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   }
 
   :root:not(.dark) {
-    --background: 150 10% 96%;
-    --foreground: 220 20% 12%;
-    --card: 0 0% 100%;
-    --card-foreground: 220 20% 12%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 12%;
-    --primary: 152 60% 38%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 150 10% 92%;
-    --secondary-foreground: 220 16% 30%;
-    --muted: 150 8% 93%;
-    --muted-foreground: 215 12% 45%;
-    --accent: 38 85% 50%;
-    --accent-foreground: 220 20% 10%;
-    --destructive: 0 72% 50%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 150 12% 88%;
-    --input: 150 12% 88%;
-    --ring: 152 60% 38%;
-    --cricket-green: 152 60% 38%;
-    --cricket-green-glow: 152 70% 48%;
-    --cricket-pitch: 120 25% 85%;
-    --cricket-gold: 38 85% 50%;
-    --cricket-red: 0 72% 50%;
-    --cricket-blue: 210 70% 50%;
-    --cricket-purple: 270 50% 50%;
-    --score-bg: 0 0% 100%;
-    --score-highlight: 152 60% 38%;
+    --background: 38 35% 92%;
+    --foreground: 30 30% 15%;
+    --card: 36 40% 95%;
+    --card-foreground: 30 30% 15%;
+    --popover: 36 40% 95%;
+    --popover-foreground: 30 30% 15%;
+    --primary: 30 55% 38%;
+    --primary-foreground: 36 40% 95%;
+    --secondary: 36 25% 88%;
+    --secondary-foreground: 30 25% 30%;
+    --muted: 36 20% 90%;
+    --muted-foreground: 30 15% 45%;
+    --accent: 15 60% 42%;
+    --accent-foreground: 36 40% 95%;
+    --destructive: 0 55% 42%;
+    --destructive-foreground: 36 40% 95%;
+    --border: 33 25% 82%;
+    --input: 33 25% 82%;
+    --ring: 30 55% 38%;
+    --cricket-green: 30 55% 38%;
+    --cricket-green-glow: 30 60% 48%;
+    --cricket-pitch: 36 20% 85%;
+    --cricket-gold: 43 70% 48%;
+    --cricket-red: 0 55% 42%;
+    --cricket-blue: 210 35% 45%;
+    --cricket-purple: 280 30% 45%;
+    --score-bg: 36 40% 95%;
+    --score-highlight: 30 55% 38%;
   }
 
   * {
@@ -82,20 +84,66 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Outfit', 'Space Grotesk', sans-serif;
+    font-family: 'Crimson Text', 'Georgia', serif;
   }
 }
 
 @layer utilities {
+  .font-heading {
+    font-family: 'Cinzel', 'Georgia', serif;
+  }
+
+  .font-medieval {
+    font-family: 'MedievalSharp', cursive;
+  }
+
   .font-mono-score {
     font-family: 'JetBrains Mono', monospace;
   }
 
+  .parchment-card {
+    background: 
+      var(--parchment-texture),
+      linear-gradient(145deg, hsl(var(--card)) 0%, hsl(var(--card) / 0.85) 100%);
+    border: 2px solid hsl(var(--border));
+    box-shadow: 
+      inset 0 1px 0 hsl(var(--primary) / 0.1),
+      0 4px 16px hsl(0 0% 0% / 0.3);
+    position: relative;
+  }
+
+  .parchment-card::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border: 1px solid hsl(var(--primary) / 0.15);
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
   .glass-card {
-    background: linear-gradient(135deg, hsl(var(--card) / 0.8), hsl(var(--card) / 0.4));
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid hsl(var(--border) / 0.5);
+    background: 
+      var(--parchment-texture),
+      linear-gradient(145deg, hsl(var(--card)) 0%, hsl(var(--card) / 0.85) 100%);
+    border: 2px solid hsl(var(--border));
+    box-shadow: 
+      inset 0 1px 0 hsl(var(--primary) / 0.1),
+      0 4px 16px hsl(0 0% 0% / 0.3);
+    position: relative;
+  }
+
+  .glass-card::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border: 1px solid hsl(var(--primary) / 0.15);
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  .ornate-divider {
+    background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.4), hsl(var(--primary) / 0.6), hsl(var(--primary) / 0.4), transparent);
+    height: 1px;
   }
 
   .gradient-border {
@@ -103,8 +151,8 @@
   }
 
   .glow-green {
-    box-shadow: 0 0 20px hsl(var(--cricket-green) / 0.25),
-                0 0 60px hsl(var(--cricket-green) / 0.08);
+    box-shadow: 0 0 20px hsl(var(--cricket-gold) / 0.2),
+                0 0 60px hsl(var(--cricket-gold) / 0.06);
   }
 
   .glow-gold {
@@ -173,15 +221,41 @@
 
   .bg-stadium {
     background: 
-      radial-gradient(ellipse at 50% 0%, hsl(var(--cricket-green) / 0.12) 0%, transparent 60%),
-      radial-gradient(ellipse at 80% 100%, hsl(var(--cricket-purple) / 0.06) 0%, transparent 50%),
+      var(--parchment-texture),
+      radial-gradient(ellipse at 50% 0%, hsl(var(--primary) / 0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 100%, hsl(var(--accent) / 0.04) 0%, transparent 50%),
       hsl(var(--background));
   }
 
   .bg-field {
     background:
-      radial-gradient(ellipse at 50% 50%, hsl(var(--cricket-green) / 0.08) 0%, transparent 70%),
+      var(--parchment-texture),
+      radial-gradient(ellipse at 50% 50%, hsl(var(--primary) / 0.06) 0%, transparent 70%),
       hsl(var(--background));
+  }
+
+  .scroll-ornament {
+    position: relative;
+  }
+  .scroll-ornament::before,
+  .scroll-ornament::after {
+    content: '❧';
+    color: hsl(var(--primary) / 0.4);
+    font-size: 1rem;
+  }
+  .scroll-ornament::before {
+    margin-right: 0.5rem;
+  }
+  .scroll-ornament::after {
+    margin-left: 0.5rem;
+    display: inline-block;
+    transform: scaleX(-1);
+  }
+
+  .chapter-heading {
+    font-family: 'Cinzel', 'Georgia', serif;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
   }
 }
 
@@ -274,4 +348,9 @@
   0% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0.4); }
   70% { box-shadow: 0 0 0 10px hsl(var(--primary) / 0); }
   100% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0); }
+}
+
+@keyframes flickerGlow {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
 }
