@@ -30,14 +30,9 @@ export default function PlayerEntry({ teamA, teamB, matchMode, onSubmit }: Playe
     }
   };
 
-  const allTeamAFilled = teamAPlayers.every(p => p.trim().length > 0);
-  const allTeamBFilled = teamBPlayers.every(p => p.trim().length > 0);
-  const canSubmit = allTeamAFilled && allTeamBFilled;
-
   const handleSubmit = () => {
-    if (!canSubmit) return;
-    const a = teamAPlayers.map(p => p.trim());
-    const b = teamBPlayers.map(p => p.trim());
+    const a = teamAPlayers.map((p, i) => p.trim() || `${teamA} Player ${i + 1}`);
+    const b = teamBPlayers.map((p, i) => p.trim() || `${teamB} Player ${i + 1}`);
     onSubmit(a, b);
   };
 
@@ -101,17 +96,9 @@ export default function PlayerEntry({ teamA, teamB, matchMode, onSubmit }: Playe
           </div>
         </div>
 
-        {!canSubmit && (
-          <p className="text-xs text-destructive text-center mt-2">
-            Please enter names for all {playerCount} players on both teams
-            {!allTeamAFilled && !allTeamBFilled ? ` (${teamA} & ${teamB})` : !allTeamAFilled ? ` (${teamA})` : ` (${teamB})`}
-          </p>
-        )}
-
         <Button
           onClick={handleSubmit}
-          disabled={!canSubmit}
-          className="w-full mt-4 bg-primary text-primary-foreground hover:bg-primary/90 font-bold h-12 rounded-xl shadow-lg shadow-primary/20 transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full mt-4 bg-primary text-primary-foreground hover:bg-primary/90 font-bold h-12 rounded-xl shadow-lg shadow-primary/20 transition-all duration-200 active:scale-[0.98]"
         >
           Next: Toss →
         </Button>
