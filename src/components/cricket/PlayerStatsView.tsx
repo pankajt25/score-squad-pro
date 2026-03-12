@@ -167,11 +167,11 @@ export default function PlayerStatsView({ onBack }: PlayerStatsViewProps) {
               return (
                 <>
                   {topRunScorer && topRunScorer.totalRuns > 0 && (
-                    <div className="parchment-card rounded-lg p-4 text-center">
-                      <p className="text-xs text-muted-foreground uppercase tracking-[0.2em] mb-1 font-heading">🏏 Supreme Scorer</p>
+                    <div className="parchment-card aged-paper-edge decorative-border rounded-lg p-4 text-center">
+                      <p className="text-xs text-muted-foreground uppercase tracking-[0.2em] mb-1 font-heading">🏏 Top Run Scorer</p>
                       <p className="text-lg font-heading font-bold text-foreground tracking-wider">{topRunScorer.name}</p>
                       <p className="text-2xl font-mono font-extrabold text-primary">{topRunScorer.totalRuns}</p>
-                      <p className="text-xs text-muted-foreground italic">runs in {topRunScorer.matches} battles</p>
+                      <p className="text-xs text-muted-foreground italic">runs in {topRunScorer.matches} matches</p>
                     </div>
                   )}
                   {topWicketTaker && topWicketTaker.wickets > 0 && (
