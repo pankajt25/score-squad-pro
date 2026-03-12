@@ -911,7 +911,7 @@ export default function LiveScorecard({
       {/* Reset */}
       <div className="text-center pt-4 pb-10">
         <button onClick={onResetMatch} className="text-xs font-heading font-medium text-muted-foreground hover:text-destructive transition-all duration-200 px-4 py-2 rounded-sm hover:bg-destructive/10 tracking-widest uppercase">
-          Abandon Tale
+          Reset Match
         </button>
       </div>
     </div>
