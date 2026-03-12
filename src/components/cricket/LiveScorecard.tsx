@@ -728,7 +728,7 @@ export default function LiveScorecard({
 
       {/* Fall of Wickets */}
       {innings.fallOfWickets.length > 0 && (
-        <div className="parchment-card rounded-lg p-4">
+        <div className="parchment-card aged-paper-edge decorative-border rounded-lg p-4">
           <p className="text-xs font-heading font-bold text-muted-foreground uppercase tracking-[0.2em] mb-3">⚜ Fall of Wickets</p>
           <div className="flex flex-wrap gap-2">
             {innings.fallOfWickets.map((fow, i) => (
