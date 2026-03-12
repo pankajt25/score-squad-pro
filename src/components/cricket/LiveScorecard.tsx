@@ -871,7 +871,7 @@ export default function LiveScorecard({
           </button>
           {showDLS && (
             <div className="p-4 space-y-3 fade-in">
-              <p className="text-xs text-muted-foreground italic">Should the rains intervene, enter revised overs for the chasing kingdom:</p>
+              <p className="text-xs text-muted-foreground italic">If rain interrupts play, enter revised overs for the chasing team:</p>
               <div className="flex gap-2 items-center">
                 <input
                   type="number"

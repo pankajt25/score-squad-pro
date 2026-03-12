@@ -244,7 +244,7 @@ export default function Toss({ teamA, teamB, onSubmit }: TossProps) {
           </div>
 
           <Button onClick={() => onSubmit(winner, decision)} className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-heading font-bold text-sm h-12 rounded-sm shadow-lg tracking-widest uppercase transition-all duration-200 active:scale-[0.98]">
-            Let the Battle Begin ⚔
+            Start Match ⚔
           </Button>
         </div>
       </div>
