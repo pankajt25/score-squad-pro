@@ -46,7 +46,7 @@ export default function PlayerEntry({ teamA, teamB, matchMode, onSubmit }: Playe
         <div className="text-center mb-6">
           <h2 className="text-2xl font-heading font-bold text-foreground tracking-widest uppercase">Enter Players</h2>
           <div className="ornate-divider w-36 mx-auto my-2" />
-          <p className="text-muted-foreground text-sm mt-1 italic">
+          <p className="text-muted-foreground text-sm mt-1 italic illuminated-dropcap">
             {rules.label} format — {playerCount} players per side
           </p>
         </div>

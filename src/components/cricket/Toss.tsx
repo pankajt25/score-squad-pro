@@ -179,11 +179,11 @@ export default function Toss({ teamA, teamB, onSubmit }: TossProps) {
           )}
         </div>
 
-        <h2 className="text-2xl font-heading font-bold text-foreground mb-2 tracking-widest uppercase">The Toss</h2>
+        <h2 className="text-2xl font-heading font-bold text-foreground mb-2 tracking-widest uppercase">Toss</h2>
         <div className="ornate-divider w-32 mx-auto mb-4" />
-        <p className="text-muted-foreground text-base mb-6 italic">Flip the coin to decide</p>
+        <p className="text-muted-foreground text-base mb-6 italic illuminated-dropcap">Flip the coin to decide</p>
 
-        <div className="parchment-card rounded-lg p-6 space-y-6">
+        <div className="parchment-card aged-paper-edge decorative-border rounded-lg p-6 space-y-6">
           <div>
             <p className="text-xs font-heading font-semibold text-muted-foreground mb-3 uppercase tracking-[0.2em]">⚜ Toss Victor</p>
             <div className="flex gap-2">

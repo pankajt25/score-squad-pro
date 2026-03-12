@@ -22,7 +22,7 @@ export default function PlayerStatsView({ onBack }: PlayerStatsViewProps) {
   const players = getAllPlayersSorted(sortBy);
 
   const handleClear = () => {
-    if (confirm("Erase all player records from the scrolls? This cannot be undone.")) {
+    if (confirm("Clear all player statistics? This cannot be undone.")) {
       clearPlayerStats();
       window.location.reload();
     }

@@ -27,9 +27,9 @@ export default function MatchHistory({ history, onBack, onClearHistory }: MatchH
       </div>
 
       {history.length === 0 ? (
-        <div className="parchment-card rounded-lg p-10 text-center">
+        <div className="parchment-card aged-paper-edge decorative-border rounded-lg p-10 text-center">
           <div className="text-4xl mb-3">📜</div>
-          <p className="text-muted-foreground italic font-medieval text-lg">No tales have been written yet</p>
+          <p className="text-muted-foreground italic text-lg illuminated-dropcap">No matches have been recorded yet</p>
         </div>
       ) : (
         <div className="space-y-3">
