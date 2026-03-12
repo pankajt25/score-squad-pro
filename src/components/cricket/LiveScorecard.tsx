@@ -823,7 +823,7 @@ export default function LiveScorecard({
             onClick={() => setShowCommentary(!showCommentary)}
             className="w-full px-4 py-2.5 border-b-2 border-border/50 bg-muted/30 flex items-center justify-between"
           >
-            <span className="text-xs font-heading font-bold text-muted-foreground uppercase tracking-[0.2em]">📝 Ball-by-Ball Chronicle</span>
+            <span className="text-xs font-heading font-bold text-muted-foreground uppercase tracking-[0.2em]">📝 Ball-by-Ball Commentary</span>
             <span className="text-xs text-muted-foreground">{showCommentary ? "▲" : "▼"}</span>
           </button>
           {showCommentary && (
