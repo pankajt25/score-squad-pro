@@ -47,10 +47,10 @@ export default function PlayerStatsView({ onBack }: PlayerStatsViewProps) {
       </div>
 
       {players.length === 0 ? (
-        <div className="parchment-card rounded-lg p-12 text-center">
+        <div className="parchment-card aged-paper-edge decorative-border rounded-lg p-12 text-center">
           <div className="text-5xl mb-4">📜</div>
-          <h3 className="text-xl font-heading font-bold text-foreground mb-2 tracking-widest uppercase">Empty Scrolls</h3>
-          <p className="text-muted-foreground text-sm italic">Complete a battle to begin inscribing legends.</p>
+          <h3 className="text-xl font-heading font-bold text-foreground mb-2 tracking-widest uppercase">No Records Yet</h3>
+          <p className="text-muted-foreground text-sm italic illuminated-dropcap">Complete a match to start tracking player statistics.</p>
         </div>
       ) : (
         <>
