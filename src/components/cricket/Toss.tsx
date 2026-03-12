@@ -209,7 +209,7 @@ export default function Toss({ teamA, teamB, onSubmit }: TossProps) {
               disabled={flipping}
               className="mt-3 text-xs font-heading font-medium text-primary hover:text-primary/80 disabled:opacity-50 transition-colors tracking-wider uppercase"
             >
-              🎲 Cast the ancient coin
+              🎲 Flip Coin
             </button>
           </div>
 
