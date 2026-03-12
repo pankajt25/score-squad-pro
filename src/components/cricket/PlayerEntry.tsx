@@ -101,7 +101,7 @@ export default function PlayerEntry({ teamA, teamB, matchMode, onSubmit }: Playe
           onClick={handleSubmit}
           className="w-full mt-4 bg-primary text-primary-foreground hover:bg-primary/90 font-heading font-bold h-12 rounded-sm shadow-lg tracking-widest uppercase transition-all duration-200 active:scale-[0.98]"
         >
-          Proceed to the Toss →
+          Proceed to Toss →
         </Button>
       </div>
     </div>

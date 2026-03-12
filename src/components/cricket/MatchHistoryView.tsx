@@ -37,7 +37,7 @@ export default function MatchHistory({ history, onBack, onClearHistory }: MatchH
             const first = m.innings[0];
             const second = m.innings[1];
             return (
-              <div key={m.id} className="parchment-card rounded-lg p-4 slide-up hover:border-primary/50 transition-colors">
+              <div key={m.id} className="parchment-card aged-paper-edge decorative-border rounded-lg p-4 slide-up hover:border-primary/50 transition-colors">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs text-muted-foreground italic">{new Date(m.createdAt).toLocaleDateString()} · {m.venue}</span>
                   <span className="text-xs text-muted-foreground font-mono">{m.oversLimit} overs</span>

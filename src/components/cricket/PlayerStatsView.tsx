@@ -175,11 +175,11 @@ export default function PlayerStatsView({ onBack }: PlayerStatsViewProps) {
                     </div>
                   )}
                   {topWicketTaker && topWicketTaker.wickets > 0 && (
-                    <div className="parchment-card rounded-lg p-4 text-center">
-                      <p className="text-xs text-muted-foreground uppercase tracking-[0.2em] mb-1 font-heading">🎯 Master Destroyer</p>
+                    <div className="parchment-card aged-paper-edge decorative-border rounded-lg p-4 text-center">
+                      <p className="text-xs text-muted-foreground uppercase tracking-[0.2em] mb-1 font-heading">🎯 Top Wicket Taker</p>
                       <p className="text-lg font-heading font-bold text-foreground tracking-wider">{topWicketTaker.name}</p>
                       <p className="text-2xl font-mono font-extrabold text-primary">{topWicketTaker.wickets}</p>
-                      <p className="text-xs text-muted-foreground italic">wickets in {topWicketTaker.matches} battles</p>
+                      <p className="text-xs text-muted-foreground italic">wickets in {topWicketTaker.matches} matches</p>
                     </div>
                   )}
                 </>

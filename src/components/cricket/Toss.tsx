@@ -215,7 +215,7 @@ export default function Toss({ teamA, teamB, onSubmit }: TossProps) {
 
           {flipDone && (
             <div className="text-sm text-primary font-heading font-bold bounce-in bg-primary/10 py-2 px-4 rounded-sm border border-primary/30 tracking-wider">
-              ⚜ {winner} prevails! ({coinSide === "heads" ? "Heads" : "Tails"})
+              ⚜ {winner} won the toss ({coinSide === "heads" ? "Heads" : "Tails"})
             </div>
           )}
 
