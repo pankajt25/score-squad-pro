@@ -8,10 +8,10 @@ interface MatchSetupProps {
 }
 
 const MATCH_MODES = [
-  { id: "t10", label: "T10", overs: 10, icon: "⚡", desc: "10 overs · 6 warriors", color: "border-primary/60" },
-  { id: "t20", label: "T20", overs: 20, icon: "🔥", desc: "20 overs · 11 warriors", color: "border-primary/60" },
-  { id: "odi", label: "ODI", overs: 50, icon: "🏏", desc: "50 overs · 11 warriors", color: "border-primary/60" },
-  { id: "test", label: "Test", overs: 90, icon: "🏛️", desc: "4 innings · 11 warriors", color: "border-primary/60" },
+  { id: "t10", label: "T10", overs: 10, icon: "⚡", desc: "10 overs · 6 players", color: "border-primary/60" },
+  { id: "t20", label: "T20", overs: 20, icon: "🔥", desc: "20 overs · 11 players", color: "border-primary/60" },
+  { id: "odi", label: "ODI", overs: 50, icon: "🏏", desc: "50 overs · 11 players", color: "border-primary/60" },
+  { id: "test", label: "Test", overs: 90, icon: "🏛️", desc: "4 innings · 11 players", color: "border-primary/60" },
   { id: "custom", label: "Custom", overs: 0, icon: "⚙️", desc: "Set your own overs", color: "border-primary/60" },
 ];
 
