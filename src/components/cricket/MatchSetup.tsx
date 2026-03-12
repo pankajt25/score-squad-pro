@@ -39,7 +39,7 @@ export default function MatchSetup({ onSubmit }: MatchSetupProps) {
           <div className="text-6xl mb-4 inline-block" style={{ animation: 'float 3s ease-in-out infinite' }}>🏏</div>
           <h1 className="text-3xl font-heading font-bold text-foreground tracking-widest uppercase">Cricket Scorer</h1>
           <div className="ornate-divider w-48 mx-auto my-3" />
-          <p className="text-muted-foreground mt-2 text-base italic font-medieval">A chronicle of bat and ball</p>
+          <p className="text-muted-foreground mt-2 text-base italic">Score every ball, track every match</p>
         </div>
         <form onSubmit={handleSubmit} className="parchment-card rounded-lg p-6 space-y-5">
           {/* Match Mode Selection */}
