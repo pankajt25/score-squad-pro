@@ -85,7 +85,7 @@ export default function PlayerStatsView({ onBack }: PlayerStatsViewProps) {
           </div>
 
           {/* Stats table */}
-          <div className="parchment-card rounded-lg overflow-hidden">
+          <div className="parchment-card aged-paper-edge decorative-border rounded-lg overflow-hidden">
             <div className="overflow-x-auto">
               {view === "batting" ? (
                 <table className="w-full text-sm">
