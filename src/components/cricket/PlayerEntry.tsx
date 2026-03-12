@@ -89,7 +89,7 @@ export default function PlayerEntry({ teamA, teamB, matchMode, onSubmit }: Playe
                 <Input
                   value={player}
                   onChange={e => updatePlayer(activeTeam, i, e.target.value)}
-                  placeholder={`Warrior ${i + 1}`}
+                  placeholder={`Player ${i + 1}`}
                   className="bg-muted/20 border-border/50 text-sm h-10 rounded-sm focus:border-primary/50 focus:bg-muted/30 transition-all"
                 />
               </div>
