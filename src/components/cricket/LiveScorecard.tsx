@@ -525,7 +525,7 @@ export default function LiveScorecard({
       {isFollowOnDecision && onEnforceFollowOn && (
         <div className="parchment-card rounded-lg p-8 text-center space-y-4 bounce-in glow-gold">
           <div className="text-5xl">📜</div>
-          <h3 className="text-2xl font-heading font-bold text-foreground tracking-widest uppercase">Follow-on Decree</h3>
+          <h3 className="text-2xl font-heading font-bold text-foreground tracking-widest uppercase">Follow-on Decision</h3>
           <div className="ornate-divider w-32 mx-auto" />
           <p className="text-muted-foreground">
             {match.innings[0]?.battingTeam} amassed <span className="text-primary font-mono font-bold">{match.innings[0]?.totalRuns}</span>,
