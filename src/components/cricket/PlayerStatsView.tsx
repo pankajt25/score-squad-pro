@@ -32,9 +32,9 @@ export default function PlayerStatsView({ onBack }: PlayerStatsViewProps) {
     <div className="min-h-[calc(100vh-56px)] p-4 max-w-4xl mx-auto space-y-4 pt-4 bg-field">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-heading font-bold text-foreground tracking-widest uppercase">The Records</h2>
+          <h2 className="text-2xl font-heading font-bold text-foreground tracking-widest uppercase">Player Statistics</h2>
           <div className="ornate-divider w-28 mt-1" />
-          <p className="text-sm text-muted-foreground italic">Legends inscribed across all battles</p>
+          <p className="text-sm text-muted-foreground italic illuminated-dropcap">Career stats across all matches</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={handleClear} className="text-xs rounded-sm text-destructive border-destructive/30 hover:bg-destructive/10 font-heading tracking-wider uppercase">
