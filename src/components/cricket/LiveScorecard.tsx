@@ -866,7 +866,7 @@ export default function LiveScorecard({
             onClick={() => setShowDLS(!showDLS)}
             className="w-full px-4 py-2.5 border-b-2 border-border/50 bg-muted/30 flex items-center justify-between"
           >
-            <span className="text-xs font-heading font-bold text-muted-foreground uppercase tracking-[0.2em]">🌧️ DLS Oracle</span>
+            <span className="text-xs font-heading font-bold text-muted-foreground uppercase tracking-[0.2em]">🌧️ DLS Calculator</span>
             <span className="text-xs text-muted-foreground">{showDLS ? "▲" : "▼"}</span>
           </button>
           {showDLS && (

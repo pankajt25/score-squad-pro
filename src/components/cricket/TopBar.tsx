@@ -57,7 +57,7 @@ export default function TopBar({
             className="px-3 py-1.5 text-xs font-heading font-medium text-muted-foreground hover:text-primary rounded-sm hover:bg-primary/10 transition-all duration-200 active:scale-95 uppercase tracking-wider"
             title="Match History"
           >
-            📜 Chronicle
+            📜 History
           </button>
           <button
             onClick={toggle}

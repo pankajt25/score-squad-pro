@@ -122,7 +122,7 @@ export default function MatchSetup({ onSubmit }: MatchSetupProps) {
           </div>
 
           <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-heading font-bold text-sm h-12 rounded-sm tracking-widest uppercase shadow-lg transition-all duration-200 active:scale-[0.98]">
-            Summon the Players →
+            Enter Players →
           </Button>
         </form>
       </div>
