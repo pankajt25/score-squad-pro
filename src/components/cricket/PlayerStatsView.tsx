@@ -22,7 +22,7 @@ export default function PlayerStatsView({ onBack }: PlayerStatsViewProps) {
   const players = getAllPlayersSorted(sortBy);
 
   const handleClear = () => {
-    if (confirm("Erase all player records from the scrolls? This cannot be undone.")) {
+    if (confirm("Clear all player statistics? This cannot be undone.")) {
       clearPlayerStats();
       window.location.reload();
     }
@@ -32,9 +32,9 @@ export default function PlayerStatsView({ onBack }: PlayerStatsViewProps) {
     <div className="min-h-[calc(100vh-56px)] p-4 max-w-4xl mx-auto space-y-4 pt-4 bg-field">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-heading font-bold text-foreground tracking-widest uppercase">The Records</h2>
+          <h2 className="text-2xl font-heading font-bold text-foreground tracking-widest uppercase">Player Statistics</h2>
           <div className="ornate-divider w-28 mt-1" />
-          <p className="text-sm text-muted-foreground italic">Legends inscribed across all battles</p>
+          <p className="text-sm text-muted-foreground italic illuminated-dropcap">Career stats across all matches</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={handleClear} className="text-xs rounded-sm text-destructive border-destructive/30 hover:bg-destructive/10 font-heading tracking-wider uppercase">
@@ -47,10 +47,10 @@ export default function PlayerStatsView({ onBack }: PlayerStatsViewProps) {
       </div>
 
       {players.length === 0 ? (
-        <div className="parchment-card rounded-lg p-12 text-center">
+        <div className="parchment-card aged-paper-edge decorative-border rounded-lg p-12 text-center">
           <div className="text-5xl mb-4">📜</div>
-          <h3 className="text-xl font-heading font-bold text-foreground mb-2 tracking-widest uppercase">Empty Scrolls</h3>
-          <p className="text-muted-foreground text-sm italic">Complete a battle to begin inscribing legends.</p>
+          <h3 className="text-xl font-heading font-bold text-foreground mb-2 tracking-widest uppercase">No Records Yet</h3>
+          <p className="text-muted-foreground text-sm italic illuminated-dropcap">Complete a match to start tracking player statistics.</p>
         </div>
       ) : (
         <>
@@ -85,14 +85,14 @@ export default function PlayerStatsView({ onBack }: PlayerStatsViewProps) {
           </div>
 
           {/* Stats table */}
-          <div className="parchment-card rounded-lg overflow-hidden">
+          <div className="parchment-card aged-paper-edge decorative-border rounded-lg overflow-hidden">
             <div className="overflow-x-auto">
               {view === "batting" ? (
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="text-xs text-muted-foreground border-b-2 border-border bg-muted/30 font-heading tracking-wider">
                       <th className="text-left p-2.5 pl-4">#</th>
-                      <th className="text-left p-2.5">Warrior</th>
+                      <th className="text-left p-2.5">Player</th>
                       <th className="text-right p-2.5">M</th>
                       <th className="text-right p-2.5">Inn</th>
                       <th className="text-right p-2.5">Runs</th>
@@ -127,7 +127,7 @@ export default function PlayerStatsView({ onBack }: PlayerStatsViewProps) {
                   <thead>
                     <tr className="text-xs text-muted-foreground border-b-2 border-border bg-muted/30 font-heading tracking-wider">
                       <th className="text-left p-2.5 pl-4">#</th>
-                      <th className="text-left p-2.5">Warrior</th>
+                      <th className="text-left p-2.5">Player</th>
                       <th className="text-right p-2.5">M</th>
                       <th className="text-right p-2.5">Inn</th>
                       <th className="text-right p-2.5">O</th>
@@ -167,19 +167,19 @@ export default function PlayerStatsView({ onBack }: PlayerStatsViewProps) {
               return (
                 <>
                   {topRunScorer && topRunScorer.totalRuns > 0 && (
-                    <div className="parchment-card rounded-lg p-4 text-center">
-                      <p className="text-xs text-muted-foreground uppercase tracking-[0.2em] mb-1 font-heading">🏏 Supreme Scorer</p>
+                    <div className="parchment-card aged-paper-edge decorative-border rounded-lg p-4 text-center">
+                      <p className="text-xs text-muted-foreground uppercase tracking-[0.2em] mb-1 font-heading">🏏 Top Run Scorer</p>
                       <p className="text-lg font-heading font-bold text-foreground tracking-wider">{topRunScorer.name}</p>
                       <p className="text-2xl font-mono font-extrabold text-primary">{topRunScorer.totalRuns}</p>
-                      <p className="text-xs text-muted-foreground italic">runs in {topRunScorer.matches} battles</p>
+                      <p className="text-xs text-muted-foreground italic">runs in {topRunScorer.matches} matches</p>
                     </div>
                   )}
                   {topWicketTaker && topWicketTaker.wickets > 0 && (
-                    <div className="parchment-card rounded-lg p-4 text-center">
-                      <p className="text-xs text-muted-foreground uppercase tracking-[0.2em] mb-1 font-heading">🎯 Master Destroyer</p>
+                    <div className="parchment-card aged-paper-edge decorative-border rounded-lg p-4 text-center">
+                      <p className="text-xs text-muted-foreground uppercase tracking-[0.2em] mb-1 font-heading">🎯 Top Wicket Taker</p>
                       <p className="text-lg font-heading font-bold text-foreground tracking-wider">{topWicketTaker.name}</p>
                       <p className="text-2xl font-mono font-extrabold text-primary">{topWicketTaker.wickets}</p>
-                      <p className="text-xs text-muted-foreground italic">wickets in {topWicketTaker.matches} battles</p>
+                      <p className="text-xs text-muted-foreground italic">wickets in {topWicketTaker.matches} matches</p>
                     </div>
                   )}
                 </>

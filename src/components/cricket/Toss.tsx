@@ -179,11 +179,11 @@ export default function Toss({ teamA, teamB, onSubmit }: TossProps) {
           )}
         </div>
 
-        <h2 className="text-2xl font-heading font-bold text-foreground mb-2 tracking-widest uppercase">The Toss</h2>
+        <h2 className="text-2xl font-heading font-bold text-foreground mb-2 tracking-widest uppercase">Toss</h2>
         <div className="ornate-divider w-32 mx-auto mb-4" />
-        <p className="text-muted-foreground text-base mb-6 italic">Flip the coin to decide</p>
+        <p className="text-muted-foreground text-base mb-6 italic illuminated-dropcap">Flip the coin to decide</p>
 
-        <div className="parchment-card rounded-lg p-6 space-y-6">
+        <div className="parchment-card aged-paper-edge decorative-border rounded-lg p-6 space-y-6">
           <div>
             <p className="text-xs font-heading font-semibold text-muted-foreground mb-3 uppercase tracking-[0.2em]">⚜ Toss Victor</p>
             <div className="flex gap-2">
@@ -209,13 +209,13 @@ export default function Toss({ teamA, teamB, onSubmit }: TossProps) {
               disabled={flipping}
               className="mt-3 text-xs font-heading font-medium text-primary hover:text-primary/80 disabled:opacity-50 transition-colors tracking-wider uppercase"
             >
-              🎲 Cast the ancient coin
+              🎲 Flip Coin
             </button>
           </div>
 
           {flipDone && (
             <div className="text-sm text-primary font-heading font-bold bounce-in bg-primary/10 py-2 px-4 rounded-sm border border-primary/30 tracking-wider">
-              ⚜ {winner} prevails! ({coinSide === "heads" ? "Heads" : "Tails"})
+              ⚜ {winner} won the toss ({coinSide === "heads" ? "Heads" : "Tails"})
             </div>
           )}
 
@@ -244,7 +244,7 @@ export default function Toss({ teamA, teamB, onSubmit }: TossProps) {
           </div>
 
           <Button onClick={() => onSubmit(winner, decision)} className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-heading font-bold text-sm h-12 rounded-sm shadow-lg tracking-widest uppercase transition-all duration-200 active:scale-[0.98]">
-            Let the Battle Begin ⚔
+            Start Match ⚔
           </Button>
         </div>
       </div>

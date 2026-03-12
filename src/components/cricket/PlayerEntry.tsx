@@ -46,7 +46,7 @@ export default function PlayerEntry({ teamA, teamB, matchMode, onSubmit }: Playe
         <div className="text-center mb-6">
           <h2 className="text-2xl font-heading font-bold text-foreground tracking-widest uppercase">Enter Players</h2>
           <div className="ornate-divider w-36 mx-auto my-2" />
-          <p className="text-muted-foreground text-sm mt-1 italic">
+          <p className="text-muted-foreground text-sm mt-1 italic illuminated-dropcap">
             {rules.label} format — {playerCount} players per side
           </p>
         </div>
@@ -75,7 +75,7 @@ export default function PlayerEntry({ teamA, teamB, matchMode, onSubmit }: Playe
           </button>
         </div>
 
-        <div className="parchment-card rounded-lg p-4 space-y-2 max-h-[55vh] overflow-y-auto">
+        <div className="parchment-card aged-paper-edge decorative-border rounded-lg p-4 space-y-2 max-h-[55vh] overflow-y-auto">
           <div className="flex items-center justify-between mb-2">
             <p className="text-xs font-heading font-semibold text-muted-foreground uppercase tracking-[0.2em]">⚜ {currentTeam}</p>
             <span className="text-xs font-mono text-primary font-bold">{filledCount}/{playerCount}</span>
@@ -89,7 +89,7 @@ export default function PlayerEntry({ teamA, teamB, matchMode, onSubmit }: Playe
                 <Input
                   value={player}
                   onChange={e => updatePlayer(activeTeam, i, e.target.value)}
-                  placeholder={`Warrior ${i + 1}`}
+                  placeholder={`Player ${i + 1}`}
                   className="bg-muted/20 border-border/50 text-sm h-10 rounded-sm focus:border-primary/50 focus:bg-muted/30 transition-all"
                 />
               </div>
@@ -101,7 +101,7 @@ export default function PlayerEntry({ teamA, teamB, matchMode, onSubmit }: Playe
           onClick={handleSubmit}
           className="w-full mt-4 bg-primary text-primary-foreground hover:bg-primary/90 font-heading font-bold h-12 rounded-sm shadow-lg tracking-widest uppercase transition-all duration-200 active:scale-[0.98]"
         >
-          Proceed to the Toss →
+          Proceed to Toss →
         </Button>
       </div>
     </div>

@@ -27,9 +27,9 @@ export default function MatchHistory({ history, onBack, onClearHistory }: MatchH
       </div>
 
       {history.length === 0 ? (
-        <div className="parchment-card rounded-lg p-10 text-center">
+        <div className="parchment-card aged-paper-edge decorative-border rounded-lg p-10 text-center">
           <div className="text-4xl mb-3">📜</div>
-          <p className="text-muted-foreground italic font-medieval text-lg">No tales have been written yet</p>
+          <p className="text-muted-foreground italic text-lg illuminated-dropcap">No matches have been recorded yet</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -37,7 +37,7 @@ export default function MatchHistory({ history, onBack, onClearHistory }: MatchH
             const first = m.innings[0];
             const second = m.innings[1];
             return (
-              <div key={m.id} className="parchment-card rounded-lg p-4 slide-up hover:border-primary/50 transition-colors">
+              <div key={m.id} className="parchment-card aged-paper-edge decorative-border rounded-lg p-4 slide-up hover:border-primary/50 transition-colors">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs text-muted-foreground italic">{new Date(m.createdAt).toLocaleDateString()} · {m.venue}</span>
                   <span className="text-xs text-muted-foreground font-mono">{m.oversLimit} overs</span>
@@ -70,7 +70,7 @@ export default function MatchHistory({ history, onBack, onClearHistory }: MatchH
 
                 {m.winner && (
                   <div className="mt-2 text-xs font-heading font-medium text-primary tracking-wider">
-                    🏆 {m.winner === "Tie" ? "A Drawn Battle" : `${m.winner} triumphed by ${m.winMargin}`}
+                    🏆 {m.winner === "Tie" ? "Match Tied" : `${m.winner} won by ${m.winMargin}`}
                   </div>
                 )}
               </div>
