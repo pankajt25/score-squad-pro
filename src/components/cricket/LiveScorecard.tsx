@@ -315,7 +315,7 @@ export default function LiveScorecard({
         )}
         {innings.batsmen.some(b => b.isRetiredHurt) && !isInningsBreak && !isCompleted && !isFollowOnDecision && (
           <div className="p-3 border-b border-border/50 bg-primary/5 space-y-2">
-            <p className="text-xs font-heading font-bold text-primary tracking-wider">🏥 Retired Hurt — Summon back:</p>
+            <p className="text-xs font-heading font-bold text-primary tracking-wider">🏥 Retired Hurt — Bring back:</p>
             <div className="flex flex-wrap gap-2">
               {innings.batsmen.map((b, i) => {
                 if (!b.isRetiredHurt) return null;
