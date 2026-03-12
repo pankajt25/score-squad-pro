@@ -75,7 +75,7 @@ export default function PlayerEntry({ teamA, teamB, matchMode, onSubmit }: Playe
           </button>
         </div>
 
-        <div className="parchment-card rounded-lg p-4 space-y-2 max-h-[55vh] overflow-y-auto">
+        <div className="parchment-card aged-paper-edge decorative-border rounded-lg p-4 space-y-2 max-h-[55vh] overflow-y-auto">
           <div className="flex items-center justify-between mb-2">
             <p className="text-xs font-heading font-semibold text-muted-foreground uppercase tracking-[0.2em]">⚜ {currentTeam}</p>
             <span className="text-xs font-mono text-primary font-bold">{filledCount}/{playerCount}</span>
