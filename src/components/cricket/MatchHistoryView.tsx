@@ -12,9 +12,9 @@ export default function MatchHistory({ history, onBack, onClearHistory }: MatchH
     <div className="min-h-screen p-4 md:p-6 max-w-2xl mx-auto bg-field">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-heading font-bold text-foreground tracking-widest uppercase">Chronicle</h2>
+          <h2 className="text-2xl font-heading font-bold text-foreground tracking-widest uppercase">Match History</h2>
           <div className="ornate-divider w-24 mt-1" />
-          <p className="text-sm text-muted-foreground italic mt-1">{history.length} tale{history.length !== 1 ? "s" : ""} recorded</p>
+          <p className="text-sm text-muted-foreground italic mt-1">{history.length} match{history.length !== 1 ? "es" : ""} recorded</p>
         </div>
         <div className="flex gap-2">
           {history.length > 0 && (

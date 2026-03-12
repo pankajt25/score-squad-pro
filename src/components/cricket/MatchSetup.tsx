@@ -8,10 +8,10 @@ interface MatchSetupProps {
 }
 
 const MATCH_MODES = [
-  { id: "t10", label: "T10", overs: 10, icon: "⚡", desc: "10 overs · 6 warriors", color: "border-primary/60" },
-  { id: "t20", label: "T20", overs: 20, icon: "🔥", desc: "20 overs · 11 warriors", color: "border-primary/60" },
-  { id: "odi", label: "ODI", overs: 50, icon: "🏏", desc: "50 overs · 11 warriors", color: "border-primary/60" },
-  { id: "test", label: "Test", overs: 90, icon: "🏛️", desc: "4 innings · 11 warriors", color: "border-primary/60" },
+  { id: "t10", label: "T10", overs: 10, icon: "⚡", desc: "10 overs · 6 players", color: "border-primary/60" },
+  { id: "t20", label: "T20", overs: 20, icon: "🔥", desc: "20 overs · 11 players", color: "border-primary/60" },
+  { id: "odi", label: "ODI", overs: 50, icon: "🏏", desc: "50 overs · 11 players", color: "border-primary/60" },
+  { id: "test", label: "Test", overs: 90, icon: "🏛️", desc: "4 innings · 11 players", color: "border-primary/60" },
   { id: "custom", label: "Custom", overs: 0, icon: "⚙️", desc: "Set your own overs", color: "border-primary/60" },
 ];
 
@@ -39,7 +39,7 @@ export default function MatchSetup({ onSubmit }: MatchSetupProps) {
           <div className="text-6xl mb-4 inline-block" style={{ animation: 'float 3s ease-in-out infinite' }}>🏏</div>
           <h1 className="text-3xl font-heading font-bold text-foreground tracking-widest uppercase">Cricket Scorer</h1>
           <div className="ornate-divider w-48 mx-auto my-3" />
-          <p className="text-muted-foreground mt-2 text-base italic font-medieval">A chronicle of bat and ball</p>
+          <p className="text-muted-foreground mt-2 text-base italic">Score every ball, track every match</p>
         </div>
         <form onSubmit={handleSubmit} className="parchment-card rounded-lg p-6 space-y-5">
           {/* Match Mode Selection */}
@@ -122,7 +122,7 @@ export default function MatchSetup({ onSubmit }: MatchSetupProps) {
           </div>
 
           <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-heading font-bold text-sm h-12 rounded-sm tracking-widest uppercase shadow-lg transition-all duration-200 active:scale-[0.98]">
-            Summon the Players →
+            Enter Players →
           </Button>
         </form>
       </div>

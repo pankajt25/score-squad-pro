@@ -44,10 +44,10 @@ export default function PlayerEntry({ teamA, teamB, matchMode, onSubmit }: Playe
     <div className="min-h-[calc(100vh-56px)] flex items-center justify-center p-4 bg-field">
       <div className="w-full max-w-md slide-up">
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-heading font-bold text-foreground tracking-widest uppercase">The Warriors</h2>
+          <h2 className="text-2xl font-heading font-bold text-foreground tracking-widest uppercase">Enter Players</h2>
           <div className="ornate-divider w-36 mx-auto my-2" />
           <p className="text-muted-foreground text-sm mt-1 italic">
-            {rules.label} format — {playerCount} souls per side
+            {rules.label} format — {playerCount} players per side
           </p>
         </div>
 

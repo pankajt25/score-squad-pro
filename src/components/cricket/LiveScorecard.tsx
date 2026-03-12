@@ -315,7 +315,7 @@ export default function LiveScorecard({
         )}
         {innings.batsmen.some(b => b.isRetiredHurt) && !isInningsBreak && !isCompleted && !isFollowOnDecision && (
           <div className="p-3 border-b border-border/50 bg-primary/5 space-y-2">
-            <p className="text-xs font-heading font-bold text-primary tracking-wider">🏥 Retired Hurt — Summon back:</p>
+            <p className="text-xs font-heading font-bold text-primary tracking-wider">🏥 Retired Hurt — Bring back:</p>
             <div className="flex flex-wrap gap-2">
               {innings.batsmen.map((b, i) => {
                 if (!b.isRetiredHurt) return null;
@@ -525,7 +525,7 @@ export default function LiveScorecard({
       {isFollowOnDecision && onEnforceFollowOn && (
         <div className="parchment-card rounded-lg p-8 text-center space-y-4 bounce-in glow-gold">
           <div className="text-5xl">📜</div>
-          <h3 className="text-2xl font-heading font-bold text-foreground tracking-widest uppercase">Follow-on Decree</h3>
+          <h3 className="text-2xl font-heading font-bold text-foreground tracking-widest uppercase">Follow-on Decision</h3>
           <div className="ornate-divider w-32 mx-auto" />
           <p className="text-muted-foreground">
             {match.innings[0]?.battingTeam} amassed <span className="text-primary font-mono font-bold">{match.innings[0]?.totalRuns}</span>,
@@ -823,7 +823,7 @@ export default function LiveScorecard({
             onClick={() => setShowCommentary(!showCommentary)}
             className="w-full px-4 py-2.5 border-b-2 border-border/50 bg-muted/30 flex items-center justify-between"
           >
-            <span className="text-xs font-heading font-bold text-muted-foreground uppercase tracking-[0.2em]">📝 Ball-by-Ball Chronicle</span>
+            <span className="text-xs font-heading font-bold text-muted-foreground uppercase tracking-[0.2em]">📝 Ball-by-Ball Commentary</span>
             <span className="text-xs text-muted-foreground">{showCommentary ? "▲" : "▼"}</span>
           </button>
           {showCommentary && (
@@ -866,7 +866,7 @@ export default function LiveScorecard({
             onClick={() => setShowDLS(!showDLS)}
             className="w-full px-4 py-2.5 border-b-2 border-border/50 bg-muted/30 flex items-center justify-between"
           >
-            <span className="text-xs font-heading font-bold text-muted-foreground uppercase tracking-[0.2em]">🌧️ DLS Oracle</span>
+            <span className="text-xs font-heading font-bold text-muted-foreground uppercase tracking-[0.2em]">🌧️ DLS Calculator</span>
             <span className="text-xs text-muted-foreground">{showDLS ? "▲" : "▼"}</span>
           </button>
           {showDLS && (
