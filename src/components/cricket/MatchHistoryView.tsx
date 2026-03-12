@@ -70,7 +70,7 @@ export default function MatchHistory({ history, onBack, onClearHistory }: MatchH
 
                 {m.winner && (
                   <div className="mt-2 text-xs font-heading font-medium text-primary tracking-wider">
-                    🏆 {m.winner === "Tie" ? "A Drawn Battle" : `${m.winner} triumphed by ${m.winMargin}`}
+                    🏆 {m.winner === "Tie" ? "Match Tied" : `${m.winner} won by ${m.winMargin}`}
                   </div>
                 )}
               </div>
