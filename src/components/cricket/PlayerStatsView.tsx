@@ -127,7 +127,7 @@ export default function PlayerStatsView({ onBack }: PlayerStatsViewProps) {
                   <thead>
                     <tr className="text-xs text-muted-foreground border-b-2 border-border bg-muted/30 font-heading tracking-wider">
                       <th className="text-left p-2.5 pl-4">#</th>
-                      <th className="text-left p-2.5">Warrior</th>
+                      <th className="text-left p-2.5">Player</th>
                       <th className="text-right p-2.5">M</th>
                       <th className="text-right p-2.5">Inn</th>
                       <th className="text-right p-2.5">O</th>
