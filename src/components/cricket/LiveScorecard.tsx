@@ -741,7 +741,7 @@ export default function LiveScorecard({
       )}
 
       {/* Full Batting Card */}
-      <div className="parchment-card rounded-lg overflow-hidden">
+      <div className="parchment-card aged-paper-edge decorative-border rounded-lg overflow-hidden">
         <div className="px-4 py-2.5 border-b-2 border-border/50 bg-muted/30">
           <span className="text-xs font-heading font-bold text-muted-foreground uppercase tracking-[0.2em]">⚜ Full Batting Scroll</span>
         </div>
