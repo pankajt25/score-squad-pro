@@ -893,7 +893,7 @@ export default function LiveScorecard({
                   }}
                   className="rounded-sm text-xs font-heading font-bold tracking-wider"
                 >
-                  Consult
+                  Calculate
                 </Button>
               </div>
               {dlsResult && (
