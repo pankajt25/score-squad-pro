@@ -44,6 +44,8 @@ export default function LiveScorecard({
   const [showByeExtras, setShowByeExtras] = useState(false);
   const [showLegByeExtras, setShowLegByeExtras] = useState(false);
   const [showDLS, setShowDLS] = useState(false);
+  const [showPlayerNames, setShowPlayerNames] = useState(false);
+  const [editingNames, setEditingNames] = useState<Record<string, string>>({});
   const [dlsOvers, setDlsOvers] = useState("");
   const [dlsResult, setDlsResult] = useState<DLSResult | null>(null);
 
