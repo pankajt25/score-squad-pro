@@ -24,6 +24,7 @@ interface LiveScorecardProps {
   onDeclareInnings?: () => void;
   onEnforceFollowOn?: (enforce: boolean) => void;
   onStartNextTestInnings?: () => void;
+  onRenamePlayer?: (team: "teamA" | "teamB", playerIndex: number, newName: string) => void;
   lastEvent: string;
   animationType: "score" | "wicket" | null;
 }
