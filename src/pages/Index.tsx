@@ -117,6 +117,7 @@ const Index = () => {
           onDeclareInnings={declareInnings}
           onEnforceFollowOn={enforceFollowOn}
           onStartNextTestInnings={startNextTestInnings}
+          onRenamePlayer={renamePlayer}
           lastEvent={lastEvent}
           animationType={animationType}
         />
