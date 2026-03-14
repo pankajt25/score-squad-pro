@@ -669,6 +669,44 @@ export function useCricketMatch() {
     setLastEvent("");
   }, []);
 
+  const renamePlayer = useCallback((team: "teamA" | "teamB", playerIndex: number, newName: string) => {
+    setMatch(prev => {
+      if (!prev) return prev;
+      const newMatch: MatchData = JSON.parse(JSON.stringify(prev));
+      const playerList = team === "teamA" ? newMatch.teamAPlayers : newMatch.teamBPlayers;
+      const oldName = playerList[playerIndex];
+      if (!oldName || oldName === newName) return prev;
+      playerList[playerIndex] = newName;
+
+      // Update all innings batsmen/bowlers and ball logs
+      newMatch.innings.forEach(inn => {
+        if (!inn) return;
+        inn.batsmen.forEach(b => { if (b.name === oldName) b.name = newName; });
+        inn.bowlers.forEach(b => { if (b.name === oldName) b.name = newName; });
+        inn.ballLog.forEach(e => {
+          if (e.batsmanName === oldName) e.batsmanName = newName;
+          if (e.bowlerName === oldName) e.bowlerName = newName;
+        });
+        inn.fallOfWickets.forEach(f => { if (f.batsmanName === oldName) f.batsmanName = newName; });
+      });
+
+      // Update super over innings too
+      if (newMatch.superOver) {
+        newMatch.superOver.innings.forEach(inn => {
+          if (!inn) return;
+          inn.batsmen.forEach(b => { if (b.name === oldName) b.name = newName; });
+          inn.bowlers.forEach(b => { if (b.name === oldName) b.name = newName; });
+          inn.ballLog.forEach(e => {
+            if (e.batsmanName === oldName) e.batsmanName = newName;
+            if (e.bowlerName === oldName) e.bowlerName = newName;
+          });
+        });
+      }
+
+      return newMatch;
+    });
+  }, []);
+
   const goBack = useCallback(() => {
     setMatch(prev => {
       if (!prev) return null;
