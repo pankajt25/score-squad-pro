@@ -30,7 +30,7 @@ interface LiveScorecardProps {
 }
 
 export default function LiveScorecard({
-  match, innings, onRecordBall, onSelectBowler, onSwapStrike, onChangeBatsman, onRetireBatsman, onUnretireBatsman, onStartSecondInnings, onResetMatch, onStartSuperOver, onStartSuperOverSecondInnings, onRecordSuperOverBall, onUndoLastBall, onDeclareInnings, onEnforceFollowOn, onStartNextTestInnings, lastEvent, animationType,
+  match, innings, onRecordBall, onSelectBowler, onSwapStrike, onChangeBatsman, onRetireBatsman, onUnretireBatsman, onStartSecondInnings, onResetMatch, onStartSuperOver, onStartSuperOverSecondInnings, onRecordSuperOverBall, onUndoLastBall, onDeclareInnings, onEnforceFollowOn, onStartNextTestInnings, onRenamePlayer, lastEvent, animationType,
 }: LiveScorecardProps) {
   const [showBowlerSelect, setShowBowlerSelect] = useState(false);
   const [showBatsmanSelect, setShowBatsmanSelect] = useState<"striker" | "nonStriker" | null>(null);
