@@ -727,7 +727,7 @@ export function useCricketMatch() {
     retireBatsman, unretireBatsman, resetMatch,
     startSuperOver, startSuperOverSecondInnings,
     recordSuperOverBall: recordSuperOverBallWithUndo,
-    undoLastBall, goBack,
+    undoLastBall, goBack, renamePlayer,
     declareInnings, enforceFollowOn, startNextTestInnings,
   };
 }
