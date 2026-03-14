@@ -19,7 +19,7 @@ const Index = () => {
     startSecondInnings, selectBowler, swapStrike, changeBatsman,
     retireBatsman, unretireBatsman, resetMatch,
     startSuperOver, startSuperOverSecondInnings, recordSuperOverBall,
-    undoLastBall, goBack,
+    undoLastBall, goBack, renamePlayer,
     declareInnings, enforceFollowOn, startNextTestInnings,
   } = useCricketMatch();
 
@@ -117,6 +117,7 @@ const Index = () => {
           onDeclareInnings={declareInnings}
           onEnforceFollowOn={enforceFollowOn}
           onStartNextTestInnings={startNextTestInnings}
+          onRenamePlayer={renamePlayer}
           lastEvent={lastEvent}
           animationType={animationType}
         />

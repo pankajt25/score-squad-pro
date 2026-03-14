@@ -24,12 +24,13 @@ interface LiveScorecardProps {
   onDeclareInnings?: () => void;
   onEnforceFollowOn?: (enforce: boolean) => void;
   onStartNextTestInnings?: () => void;
+  onRenamePlayer?: (team: "teamA" | "teamB", playerIndex: number, newName: string) => void;
   lastEvent: string;
   animationType: "score" | "wicket" | null;
 }
 
 export default function LiveScorecard({
-  match, innings, onRecordBall, onSelectBowler, onSwapStrike, onChangeBatsman, onRetireBatsman, onUnretireBatsman, onStartSecondInnings, onResetMatch, onStartSuperOver, onStartSuperOverSecondInnings, onRecordSuperOverBall, onUndoLastBall, onDeclareInnings, onEnforceFollowOn, onStartNextTestInnings, lastEvent, animationType,
+  match, innings, onRecordBall, onSelectBowler, onSwapStrike, onChangeBatsman, onRetireBatsman, onUnretireBatsman, onStartSecondInnings, onResetMatch, onStartSuperOver, onStartSuperOverSecondInnings, onRecordSuperOverBall, onUndoLastBall, onDeclareInnings, onEnforceFollowOn, onStartNextTestInnings, onRenamePlayer, lastEvent, animationType,
 }: LiveScorecardProps) {
   const [showBowlerSelect, setShowBowlerSelect] = useState(false);
   const [showBatsmanSelect, setShowBatsmanSelect] = useState<"striker" | "nonStriker" | null>(null);
@@ -43,6 +44,8 @@ export default function LiveScorecard({
   const [showByeExtras, setShowByeExtras] = useState(false);
   const [showLegByeExtras, setShowLegByeExtras] = useState(false);
   const [showDLS, setShowDLS] = useState(false);
+  const [showPlayerNames, setShowPlayerNames] = useState(false);
+  const [editingNames, setEditingNames] = useState<Record<string, string>>({});
   const [dlsOvers, setDlsOvers] = useState("");
   const [dlsResult, setDlsResult] = useState<DLSResult | null>(null);
 
@@ -907,6 +910,50 @@ export default function LiveScorecard({
           )}
         </div>
       )}
+
+      {/* Player Name Editor */}
+      <div className="parchment-card rounded-lg overflow-hidden">
+        <button
+          onClick={() => setShowPlayerNames(!showPlayerNames)}
+          className="w-full px-4 py-3 flex items-center justify-between text-xs font-heading font-bold text-muted-foreground uppercase tracking-[0.2em] hover:bg-muted/20 transition-colors"
+        >
+          <span>✎ Edit Player Names</span>
+          <span className="text-base">{showPlayerNames ? "▾" : "▸"}</span>
+        </button>
+        {showPlayerNames && onRenamePlayer && (
+          <div className="p-4 border-t-2 border-border/50 space-y-4">
+            {[{ team: "teamA" as const, name: match.teamA, players: match.teamAPlayers }, { team: "teamB" as const, name: match.teamB, players: match.teamBPlayers }].map(({ team, name, players }) => (
+              <div key={team} className="space-y-2">
+                <h4 className="text-xs font-heading font-bold text-primary tracking-wider uppercase">{name}</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {players.map((player, idx) => {
+                    const key = `${team}-${idx}`;
+                    return (
+                      <div key={key} className="flex items-center gap-2">
+                        <span className="text-xs text-muted-foreground font-mono w-6 text-right">{idx + 1}.</span>
+                        <input
+                          type="text"
+                          value={editingNames[key] ?? player}
+                          onChange={e => setEditingNames(prev => ({ ...prev, [key]: e.target.value }))}
+                          onBlur={() => {
+                            const newName = (editingNames[key] ?? "").trim();
+                            if (newName && newName !== player) {
+                              onRenamePlayer(team, idx, newName);
+                            }
+                            setEditingNames(prev => { const n = { ...prev }; delete n[key]; return n; });
+                          }}
+                          onKeyDown={e => { if (e.key === "Enter") (e.target as HTMLInputElement).blur(); }}
+                          className="flex-1 bg-muted/30 border border-border/50 rounded-sm px-2 py-1.5 text-sm text-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-colors"
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Reset */}
       <div className="text-center pt-4 pb-10">
