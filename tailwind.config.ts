@@ -14,9 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Crimson Text", "Georgia", "serif"],
-        heading: ["Cinzel", "Georgia", "serif"],
-        medieval: ["MedievalSharp", "cursive"],
+        sans: ["DM Sans", "Inter", "system-ui", "sans-serif"],
+        display: ["Inter", "system-ui", "sans-serif"],
         mono: ["JetBrains Mono", "monospace"],
       },
       colors: {
