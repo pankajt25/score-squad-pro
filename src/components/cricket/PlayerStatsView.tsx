@@ -32,38 +32,37 @@ export default function PlayerStatsView({ onBack }: PlayerStatsViewProps) {
     <div className="min-h-[calc(100vh-56px)] p-4 max-w-4xl mx-auto space-y-4 pt-4 bg-field">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-heading font-bold text-foreground tracking-widest uppercase">Player Statistics</h2>
-          <div className="ornate-divider w-28 mt-1" />
-          <p className="text-sm text-muted-foreground italic illuminated-dropcap">Career stats across all matches</p>
+          <h2 className="text-2xl font-display text-foreground tracking-tight">Player Statistics</h2>
+          <p className="text-sm text-muted-foreground mt-1">Career stats across all matches</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={handleClear} className="text-xs rounded-sm text-destructive border-destructive/30 hover:bg-destructive/10 font-heading tracking-wider uppercase">
-            Erase
+          <Button variant="outline" size="sm" onClick={handleClear} className="text-xs rounded-lg text-destructive border-destructive/30 hover:bg-destructive/10">
+            Clear
           </Button>
-          <Button variant="outline" size="sm" onClick={onBack} className="text-xs rounded-sm font-heading tracking-wider uppercase">
+          <Button variant="outline" size="sm" onClick={onBack} className="text-xs rounded-lg">
             ← Back
           </Button>
         </div>
       </div>
 
       {players.length === 0 ? (
-        <div className="parchment-card aged-paper-edge decorative-border rounded-lg p-12 text-center">
-          <div className="text-5xl mb-4">📜</div>
-          <h3 className="text-xl font-heading font-bold text-foreground mb-2 tracking-widest uppercase">No Records Yet</h3>
-          <p className="text-muted-foreground text-sm italic illuminated-dropcap">Complete a match to start tracking player statistics.</p>
+        <div className="glass-card rounded-xl p-12 text-center">
+          <div className="text-5xl mb-4">📊</div>
+          <h3 className="text-xl font-display text-foreground mb-2">No Records Yet</h3>
+          <p className="text-muted-foreground text-sm">Complete a match to start tracking player statistics.</p>
         </div>
       ) : (
         <>
           {/* View toggle */}
-          <div className="flex gap-1 p-1 bg-muted/50 rounded-sm border border-border">
+          <div className="flex gap-1 p-1 bg-muted/50 rounded-lg border border-border">
             <button
-              className={`flex-1 py-2 rounded-sm text-sm font-heading font-bold tracking-wider transition-all ${view === "batting" ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground hover:text-foreground"}`}
+              className={`flex-1 py-2 rounded-md text-sm font-bold transition-all ${view === "batting" ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground hover:text-foreground"}`}
               onClick={() => { setView("batting"); setSortBy("runs"); }}
             >
               🏏 Batting
             </button>
             <button
-              className={`flex-1 py-2 rounded-sm text-sm font-heading font-bold tracking-wider transition-all ${view === "bowling" ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground hover:text-foreground"}`}
+              className={`flex-1 py-2 rounded-md text-sm font-bold transition-all ${view === "bowling" ? "bg-primary text-primary-foreground shadow-md" : "text-muted-foreground hover:text-foreground"}`}
               onClick={() => { setView("bowling"); setSortBy("wickets"); }}
             >
               🎯 Bowling
@@ -72,12 +71,12 @@ export default function PlayerStatsView({ onBack }: PlayerStatsViewProps) {
 
           {/* Sort options */}
           <div className="flex gap-2 items-center">
-            <span className="text-xs font-heading font-semibold text-muted-foreground uppercase tracking-[0.2em]">Order by:</span>
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Sort by:</span>
             {(view === "batting" ? ["runs", "matches"] : ["wickets", "matches"]).map(s => (
               <button
                 key={s}
                 onClick={() => setSortBy(s as any)}
-                className={`text-xs px-3 py-1.5 rounded-sm font-heading font-bold tracking-wider transition-all border ${sortBy === s ? "bg-primary/15 text-primary border-primary/30" : "text-muted-foreground hover:bg-muted/50 border-transparent"}`}
+                className={`text-xs px-3 py-1.5 rounded-lg font-bold transition-all border ${sortBy === s ? "bg-primary/15 text-primary border-primary/30" : "text-muted-foreground hover:bg-muted/50 border-transparent"}`}
               >
                 {s.charAt(0).toUpperCase() + s.slice(1)}
               </button>
@@ -85,12 +84,12 @@ export default function PlayerStatsView({ onBack }: PlayerStatsViewProps) {
           </div>
 
           {/* Stats table */}
-          <div className="parchment-card aged-paper-edge decorative-border rounded-lg overflow-hidden">
+          <div className="glass-card rounded-xl overflow-hidden">
             <div className="overflow-x-auto">
               {view === "batting" ? (
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="text-xs text-muted-foreground border-b-2 border-border bg-muted/30 font-heading tracking-wider">
+                    <tr className="text-xs text-muted-foreground border-b border-border bg-muted/30">
                       <th className="text-left p-2.5 pl-4">#</th>
                       <th className="text-left p-2.5">Player</th>
                       <th className="text-right p-2.5">M</th>
@@ -106,9 +105,9 @@ export default function PlayerStatsView({ onBack }: PlayerStatsViewProps) {
                   </thead>
                   <tbody>
                     {players.filter(p => p.innings > 0).map((p, i) => (
-                      <tr key={p.name} className="border-b border-border/30 hover:bg-muted/20 transition-colors">
-                        <td className="p-2.5 pl-4 text-muted-foreground font-heading text-xs">{["I","II","III","IV","V","VI","VII","VIII","IX","X"][i] || i+1}</td>
-                        <td className="p-2.5 text-foreground font-heading font-semibold tracking-wider">{p.name}</td>
+                      <tr key={p.name} className="border-b border-border/20 hover:bg-muted/20 transition-colors">
+                        <td className="p-2.5 pl-4 text-muted-foreground text-xs font-mono">{i + 1}</td>
+                        <td className="p-2.5 text-foreground font-semibold">{p.name}</td>
                         <td className="text-right p-2.5 font-mono text-muted-foreground">{p.matches}</td>
                         <td className="text-right p-2.5 font-mono text-muted-foreground">{p.innings}</td>
                         <td className="text-right p-2.5 font-mono font-bold text-foreground">{p.totalRuns}</td>
@@ -125,7 +124,7 @@ export default function PlayerStatsView({ onBack }: PlayerStatsViewProps) {
               ) : (
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="text-xs text-muted-foreground border-b-2 border-border bg-muted/30 font-heading tracking-wider">
+                    <tr className="text-xs text-muted-foreground border-b border-border bg-muted/30">
                       <th className="text-left p-2.5 pl-4">#</th>
                       <th className="text-left p-2.5">Player</th>
                       <th className="text-right p-2.5">M</th>
@@ -140,9 +139,9 @@ export default function PlayerStatsView({ onBack }: PlayerStatsViewProps) {
                   </thead>
                   <tbody>
                     {players.filter(p => p.bowlingInnings > 0).map((p, i) => (
-                      <tr key={p.name} className="border-b border-border/30 hover:bg-muted/20 transition-colors">
-                        <td className="p-2.5 pl-4 text-muted-foreground font-heading text-xs">{["I","II","III","IV","V","VI","VII","VIII","IX","X"][i] || i+1}</td>
-                        <td className="p-2.5 text-foreground font-heading font-semibold tracking-wider">{p.name}</td>
+                      <tr key={p.name} className="border-b border-border/20 hover:bg-muted/20 transition-colors">
+                        <td className="p-2.5 pl-4 text-muted-foreground text-xs font-mono">{i + 1}</td>
+                        <td className="p-2.5 text-foreground font-semibold">{p.name}</td>
                         <td className="text-right p-2.5 font-mono text-muted-foreground">{p.matches}</td>
                         <td className="text-right p-2.5 font-mono text-muted-foreground">{p.bowlingInnings}</td>
                         <td className="text-right p-2.5 font-mono text-muted-foreground">{p.oversBowled}</td>
@@ -159,7 +158,7 @@ export default function PlayerStatsView({ onBack }: PlayerStatsViewProps) {
             </div>
           </div>
 
-          {/* Top performers summary */}
+          {/* Top performers */}
           <div className="grid grid-cols-2 gap-3">
             {(() => {
               const topRunScorer = [...players].sort((a, b) => b.totalRuns - a.totalRuns)[0];
@@ -167,19 +166,19 @@ export default function PlayerStatsView({ onBack }: PlayerStatsViewProps) {
               return (
                 <>
                   {topRunScorer && topRunScorer.totalRuns > 0 && (
-                    <div className="parchment-card aged-paper-edge decorative-border rounded-lg p-4 text-center">
-                      <p className="text-xs text-muted-foreground uppercase tracking-[0.2em] mb-1 font-heading">🏏 Top Run Scorer</p>
-                      <p className="text-lg font-heading font-bold text-foreground tracking-wider">{topRunScorer.name}</p>
+                    <div className="glass-card rounded-xl p-4 text-center">
+                      <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">🏏 Top Run Scorer</p>
+                      <p className="text-lg font-display text-foreground">{topRunScorer.name}</p>
                       <p className="text-2xl font-mono font-extrabold text-primary">{topRunScorer.totalRuns}</p>
-                      <p className="text-xs text-muted-foreground italic">runs in {topRunScorer.matches} matches</p>
+                      <p className="text-xs text-muted-foreground">runs in {topRunScorer.matches} matches</p>
                     </div>
                   )}
                   {topWicketTaker && topWicketTaker.wickets > 0 && (
-                    <div className="parchment-card aged-paper-edge decorative-border rounded-lg p-4 text-center">
-                      <p className="text-xs text-muted-foreground uppercase tracking-[0.2em] mb-1 font-heading">🎯 Top Wicket Taker</p>
-                      <p className="text-lg font-heading font-bold text-foreground tracking-wider">{topWicketTaker.name}</p>
+                    <div className="glass-card rounded-xl p-4 text-center">
+                      <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">🎯 Top Wicket Taker</p>
+                      <p className="text-lg font-display text-foreground">{topWicketTaker.name}</p>
                       <p className="text-2xl font-mono font-extrabold text-primary">{topWicketTaker.wickets}</p>
-                      <p className="text-xs text-muted-foreground italic">wickets in {topWicketTaker.matches} matches</p>
+                      <p className="text-xs text-muted-foreground">wickets in {topWicketTaker.matches} matches</p>
                     </div>
                   )}
                 </>
